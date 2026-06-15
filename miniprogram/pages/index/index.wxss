@@ -1,0 +1,244 @@
+/* pages/index/index.wxss */
+
+.index-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+/* 搜索栏 */
+.search-bar {
+  padding: 20rpx 30rpx;
+  background: #FF6B35;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 40rpx;
+  padding: 0 24rpx;
+  height: 72rpx;
+  transition: all 0.3s;
+}
+
+.search-box.has-value {
+  background: #ffffff;
+}
+
+.search-icon {
+  font-size: 32rpx;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.search-placeholder {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 28rpx;
+  flex: 1;
+}
+
+.search-input {
+  flex: 1;
+  height: 72rpx;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.search-clear {
+  font-size: 36rpx;
+  color: #999;
+  padding: 0 12rpx;
+  line-height: 72rpx;
+  cursor: pointer;
+}
+
+/* 主体 */
+.main-container {
+  display: flex;
+  height: 100vh;
+  padding-top: 112rpx;
+  overflow: hidden;
+}
+
+/* 左侧分类 */
+.category-sidebar {
+  width: 180rpx;
+  height: 100%;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.cat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28rpx 12rpx;
+  font-size: 22rpx;
+  color: #666;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.cat-item.active {
+  background: #fff5f0;
+  color: #FF6B35;
+  font-weight: 600;
+}
+
+.cat-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6rpx;
+  height: 40rpx;
+  background: #FF6B35;
+  border-radius: 0 4rpx 4rpx 0;
+}
+
+.cat-icon {
+  font-size: 40rpx;
+  margin-bottom: 8rpx;
+}
+
+/* 右侧内容 */
+.drink-content {
+  flex: 1;
+  height: 100%;
+  background: #f5f5f5;
+  padding-bottom: 100rpx;
+}
+
+.group {
+  padding: 0 20rpx;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24rpx 10rpx 16rpx;
+}
+
+.group-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.group-count {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 商品网格 */
+.drink-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+  padding-bottom: 20rpx;
+}
+
+.drink-card {
+  width: calc(50% - 8rpx);
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+  transition: transform 0.15s;
+}
+
+.drink-card:active {
+  transform: scale(0.97);
+}
+
+.drink-image {
+  width: 100%;
+  height: 240rpx;
+  position: relative;
+}
+
+.drink-image text {
+  font-size: 80rpx;
+}
+
+.tag {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
+  padding: 4rpx 14rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+.new-tag {
+  background: #FF6B35;
+}
+
+.hot-tag {
+  background: #e54545;
+}
+
+.drink-info {
+  padding: 16rpx;
+}
+
+.drink-name {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6rpx;
+}
+
+.drink-desc {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.drink-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price-box {
+  display: flex;
+  align-items: baseline;
+}
+
+.price-symbol {
+  font-size: 22rpx;
+  color: #FF6B35;
+  font-weight: 600;
+  margin-right: 2rpx;
+}
+
+.price-value {
+  font-size: 34rpx;
+  color: #FF6B35;
+  font-weight: 700;
+}
+
+.sales-box {
+  font-size: 20rpx;
+  color: #ccc;
+}
+
+.empty-tip {
+  text-align: center;
+  padding: 80rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}

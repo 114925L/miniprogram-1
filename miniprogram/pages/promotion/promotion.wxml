@@ -1,0 +1,103 @@
+<!--pages/promotion/promotion.wxml-->
+<view class="promotion-page">
+  <!-- 轮播 Banner -->
+  <swiper
+    class="banner-swiper"
+    autoplay
+    interval="4000"
+    circular
+    bindchange="onBannerChange"
+  >
+    <swiper-item wx:for="{{banners}}" wx:key="id" data-index="{{index}}" bindtap="onBannerTap">
+      <view class="banner-item" style="background: {{item.gradient}}">
+        <text class="banner-emoji">{{item.image}}</text>
+        <text class="banner-text">{{item.title}}</text>
+      </view>
+    </swiper-item>
+  </swiper>
+  <view class="banner-dots">
+    <view
+      wx:for="{{banners}}"
+      wx:key="id"
+      class="dot {{currentBanner === index ? 'active' : ''}}"
+    ></view>
+  </view>
+
+  <!-- 限时秒杀 -->
+  <view class="section kill-section">
+    <view class="section-header">
+      <view class="section-title">
+        <text class="fire-icon">🔥</text>
+        <text>限时秒杀</text>
+      </view>
+      <view class="countdown">
+        <text class="cd-text">距结束</text>
+        <text class="cd-time">{{countdown.hours}}:{{countdown.minutes}}:{{countdown.seconds}}</text>
+      </view>
+    </view>
+    <scroll-view scroll-x class="kill-scroll">
+      <view class="kill-list">
+        <view
+          wx:for="{{secretKillItems}}"
+          wx:key="id"
+          class="kill-card"
+        >
+          <view class="kill-image placeholder-bg" style="background: {{item.gradient}}">
+            <text>{{item.image}}</text>
+          </view>
+          <view class="kill-price-row">
+            <text class="kill-price">¥{{item.price}}</text>
+            <text class="kill-original">¥{{item.originalPrice}}</text>
+          </view>
+          <text class="kill-name ellipsis">{{item.name}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 优惠券 -->
+  <view class="section coupon-section">
+    <view class="section-title">优惠券</view>
+    <view class="coupon-list">
+      <view
+        wx:for="{{couponList}}"
+        wx:key="id"
+        class="coupon-card {{userCoupons.indexOf(item.id) > -1 ? 'received' : ''}}"
+      >
+        <view class="coupon-left">
+          <view class="coupon-amount">
+            <text class="amount-num">{{item.reduce}}</text>
+            <text class="amount-unit">元</text>
+          </view>
+        </view>
+        <view class="coupon-right">
+          <view class="coupon-condition">
+            <text>满{{item.threshold}}元可用</text>
+          </view>
+          <view class="coupon-type">{{item.type}}</view>
+          <view
+            class="coupon-btn {{userCoupons.indexOf(item.id) > -1 ? 'btn-disabled' : ''}}"
+            data-id="{{item.id}}"
+            bindtap="onReceiveCoupon"
+          >
+            {{userCoupons.indexOf(item.id) > -1 ? '已领取' : '领取'}}
+          </view>
+        </view>
+        <view class="coupon-cut-left"></view>
+        <view class="coupon-cut-right"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 新人专享 -->
+  <view class="section new-user-section">
+    <view class="new-user-card">
+      <text class="nu-icon">🎁</text>
+      <view class="nu-info">
+        <text class="nu-title">新人专享</text>
+        <text class="nu-desc">首单立减 ¥5</text>
+      </view>
+      <view class="nu-btn">立即查看</view>
+    </view>
+  </view>
+</view>

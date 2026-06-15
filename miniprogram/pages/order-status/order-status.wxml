@@ -1,0 +1,83 @@
+<!--pages/order-status/order-status.wxml-->
+<view class="status-page">
+  <!-- 成功动画 -->
+  <view class="success-section">
+    <view class="success-icon">
+      <view class="check-circle">
+        <text class="check-mark">✓</text>
+      </view>
+    </view>
+    <text class="success-title">订单提交成功</text>
+    <text class="success-sub">奶茶正在为您制作中</text>
+  </view>
+
+  <!-- 订单信息卡片 -->
+  <view class="info-card">
+    <!-- 订单号 -->
+    <view class="card-row">
+      <text class="card-label">订单序号</text>
+      <text class="card-value order-no">{{orderNo}}</text>
+    </view>
+    <view class="card-divider"></view>
+
+    <!-- 前方排队 -->
+    <view class="card-row">
+      <text class="card-label">前方排队</text>
+      <view class="queue-info">
+        <text class="queue-num">{{queueCount}}</text>
+        <text class="queue-text">单</text>
+      </view>
+    </view>
+    <view class="card-divider"></view>
+
+    <!-- 预计取单时间 -->
+    <view class="card-row">
+      <text class="card-label">预计取单</text>
+      <view class="eta-info">
+        <text class="eta-value">{{estimatedMinutes}}</text>
+        <text class="eta-unit">分钟</text>
+      </view>
+    </view>
+    <view class="card-divider"></view>
+
+    <!-- 倒计时 -->
+    <view class="card-row countdown-row">
+      <text class="card-label">制作倒计时</text>
+      <text class="countdown-value">{{countdownText}}</text>
+    </view>
+  </view>
+
+  <!-- 订单进度 -->
+  <view class="progress-section">
+    <view class="section-title">订单进度</view>
+    <view class="progress-steps">
+      <view class="step {{orderStatus === 'pending' ? 'active' : (orderStatus === 'ready' ? 'done' : '')}}">
+        <view class="step-icon">📝</view>
+        <text class="step-name">已下单</text>
+      </view>
+      <view class="step-line {{orderStatus === 'ready' ? 'done' : ''}}"></view>
+      <view class="step {{orderStatus === 'ready' ? 'active' : ''}}">
+        <view class="step-icon">🧋</view>
+        <text class="step-name">制作中</text>
+      </view>
+      <view class="step-line"></view>
+      <view class="step {{orderStatus === 'ready' ? 'done' : ''}}">
+        <view class="step-icon">✅</view>
+        <text class="step-name">可取货</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 温馨提示 -->
+  <view class="tips-section">
+    <view class="tips-title">💡 温馨提示</view>
+    <view class="tip-item">请留意订单状态，到达后可到门店取货</view>
+    <view class="tip-item">如需改期或取消订单，请及时联系客服</view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="action-area">
+    <view class="btn btn-home" bindtap="goHome">返回首页</view>
+    <view class="btn btn-continue" bindtap="continueShopping">继续逛逛</view>
+  </view>
+</view>

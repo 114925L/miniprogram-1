@@ -1,0 +1,370 @@
+/* pages/usercenter/usercenter.wxss */
+.user-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 40rpx;
+}
+
+/* 用户头部 */
+.user-header {
+  position: relative;
+  height: 320rpx;
+  background: linear-gradient(135deg, #FF6B35 0%, #FFB347 100%);
+}
+
+.user-info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 60rpx 30rpx 30rpx;
+  z-index: 1;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.user-detail {
+  flex: 1;
+  margin-left: 24rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
+}
+
+.nickname {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+.uid {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sign-in-btn {
+  padding: 10rpx 28rpx;
+  background: rgba(255, 255, 255, 0.25);
+  border: 2rpx solid rgba(255, 255, 255, 0.6);
+  border-radius: 30rpx;
+  font-size: 24rpx;
+  color: #fff;
+}
+
+.sign-in-btn.signed {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* 数据面板 */
+.data-panel {
+  display: flex;
+  background: #fff;
+  margin: -40rpx 20rpx 16rpx;
+  border-radius: 16rpx;
+  padding: 30rpx 0;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  position: relative;
+  z-index: 2;
+}
+
+.data-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.data-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FF6B35;
+}
+
+.data-label {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 通用区块 */
+.section {
+  background: #fff;
+  margin: 16rpx 20rpx;
+  border-radius: 16rpx;
+  padding: 30rpx;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.section-more {
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 优惠券列表 */
+.empty-coupon {
+  text-align: center;
+  padding: 40rpx 0;
+  font-size: 26rpx;
+  color: #ccc;
+}
+
+.my-coupon-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.my-coupon-card {
+  display: flex;
+  align-items: stretch;
+  background: #fff5f0;
+  border: 2rpx dashed #FFB347;
+  border-radius: 12rpx;
+  overflow: hidden;
+  height: 120rpx;
+  padding: 0 20rpx;
+  position: relative;
+}
+
+.my-coupon-card.disabled {
+  opacity: 0.5;
+}
+
+.mc-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120rpx;
+  border-right: 2rpx dashed #FFB347;
+  flex-shrink: 0;
+}
+
+.mc-amount {
+  color: #FF6B35;
+}
+
+.mc-num {
+  font-size: 44rpx;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.mc-unit {
+  font-size: 20rpx;
+  margin-left: 4rpx;
+}
+
+.mc-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-left: 20rpx;
+  gap: 6rpx;
+}
+
+.mc-name {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.mc-condition {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.mc-status {
+  font-size: 20rpx;
+  padding: 2rpx 12rpx;
+  border-radius: 6rpx;
+  align-self: flex-start;
+}
+
+.mc-status.received {
+  background: #FF6B35;
+  color: #fff;
+}
+
+.mc-status.not-received {
+  background: #e5e5e5;
+  color: #999;
+}
+
+.mc-right::after,
+.mc-right::before {
+  content: '';
+  position: absolute;
+  width: 16rpx;
+  height: 16rpx;
+  background: #f5f5f5;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.mc-right::before {
+  right: -8rpx;
+}
+
+/* 订单 Tab */
+.order-tabs {
+  display: flex;
+  border-bottom: 2rpx solid #f0f0f0;
+  margin-bottom: 20rpx;
+}
+
+.order-tab {
+  flex: 1;
+  text-align: center;
+  padding: 16rpx 0;
+  font-size: 26rpx;
+  color: #999;
+  position: relative;
+}
+
+.order-tab.active {
+  color: #FF6B35;
+  font-weight: 600;
+}
+
+.order-tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40rpx;
+  height: 4rpx;
+  background: #FF6B35;
+  border-radius: 2rpx;
+}
+
+/* 订单卡片 */
+.order-card {
+  display: flex;
+  padding: 24rpx 0;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+
+.order-card:last-child {
+  border-bottom: none;
+}
+
+.order-items {
+  display: flex;
+  gap: 12rpx;
+  flex-shrink: 0;
+}
+
+.order-item-emoji {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.order-item-emoji text {
+  font-size: 44rpx;
+}
+
+.order-info {
+  flex: 1;
+  margin-left: 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.order-names {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.5;
+}
+
+.order-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order-time {
+  font-size: 22rpx;
+  color: #ccc;
+}
+
+.order-status {
+  font-size: 24rpx;
+  color: #FF6B35;
+}
+
+.order-status.status-2 {
+  color: #52C41A;
+}
+
+.order-amount {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 常用功能 */
+.feature-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.feature-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+  padding: 24rpx 0;
+}
+
+.feature-icon {
+  font-size: 48rpx;
+}
+
+.feature-name {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 退出登录 */
+.logout-btn {
+  margin: 40rpx 30rpx;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #999;
+  border-top: 2rpx solid #f0f0f0;
+}

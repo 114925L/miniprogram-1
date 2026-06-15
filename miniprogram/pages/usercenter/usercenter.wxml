@@ -1,0 +1,140 @@
+<!--pages/usercenter/usercenter.wxml-->
+<view class="user-page">
+  <!-- 用户头部 -->
+  <view class="user-header">
+    <view class="header-bg"></view>
+    <view class="user-info">
+      <view class="avatar placeholder-bg">{{userInfo.avatar}}</view>
+      <view class="user-detail">
+        <text class="nickname">{{userInfo.nickname}}</text>
+        <text class="uid">UID: {{userInfo.uid}}</text>
+      </view>
+      <view class="sign-in-btn {{canSignIn ? '' : 'signed'}}" bindtap="onSignIn">
+        <text>{{canSignIn ? '签到 +10' : '已签到'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据面板 -->
+  <view class="data-panel">
+    <view class="data-item">
+      <text class="data-num">{{points}}</text>
+      <text class="data-label">积分</text>
+    </view>
+    <view class="data-item">
+      <text class="data-num">{{couponCount}}</text>
+      <text class="data-label">优惠券</text>
+    </view>
+    <view class="data-item">
+      <text class="data-num">{{orderCount}}</text>
+      <text class="data-label">订单</text>
+    </view>
+    <view class="data-item">
+      <text class="data-num">{{favoriteCount}}</text>
+      <text class="data-label">收藏</text>
+    </view>
+  </view>
+
+  <!-- 我的优惠券 -->
+  <view class="section coupon-list-section">
+    <view class="section-header">
+      <text class="section-title">我的优惠券</text>
+      <text class="section-more">{{couponList.length}}张</text>
+    </view>
+    <block wx:if="{{couponList.length > 0}}">
+      <view class="my-coupon-list">
+        <view
+          wx:for="{{couponList}}"
+          wx:key="id"
+          class="my-coupon-card {{item.isReceived ? '' : 'disabled'}}"
+        >
+          <view class="mc-left">
+            <view class="mc-amount">
+              <text class="mc-num">{{item.reduce}}</text>
+              <text class="mc-unit">元</text>
+            </view>
+          </view>
+          <view class="mc-right">
+            <text class="mc-name">{{item.name}}</text>
+            <text class="mc-condition">满{{item.threshold}}元可用</text>
+            <text class="mc-status {{item.isReceived ? 'received' : 'not-received'}}">{{item.isReceived ? '已领取' : '领取'}}</text>
+          </view>
+        </view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty-coupon">
+        <text>暂无优惠券，快去活动页领取吧~</text>
+      </view>
+    </block>
+  </view>
+
+  <!-- 我的订单 -->
+  <view class="section order-section">
+    <view class="section-header">
+      <text class="section-title">我的订单</text>
+      <text class="section-more">全部订单 ></text>
+    </view>
+    <view class="order-tabs">
+      <view
+        wx:for="{{orderTabs}}"
+        wx:key="*this"
+        class="order-tab {{activeOrderTab === index ? 'active' : ''}}"
+        data-index="{{index}}"
+        bindtap="onOrderTabTap"
+      >
+        <text>{{item}}</text>
+      </view>
+    </view>
+    <view class="order-list">
+      <view
+        wx:for="{{filteredOrders}}"
+        wx:key="id"
+        class="order-card"
+        data-id="{{item.id}}"
+        bindtap="onOrderTap"
+      >
+        <view class="order-items">
+          <view
+            wx:for="{{item.items}}"
+            wx:for-item="emoji"
+            wx:key="*this"
+            class="order-item-emoji placeholder-bg"
+            style="background: {{index === 0 ? 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'}}"
+          >
+            <text>{{emoji}}</text>
+          </view>
+        </view>
+        <view class="order-info">
+          <view class="order-names text-ellipsis-2">
+            <text wx:for="{{item.names}}" wx:for-item="n" wx:key="*this">{{n}}  </text>
+          </view>
+          <view class="order-bottom">
+            <text class="order-time">{{item.time}}</text>
+            <text class="order-status {{item.status > 0 ? 'status-' + item.status : ''}}">{{item.statusText}}</text>
+            <text class="order-amount">¥{{item.amount}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 常用功能 -->
+  <view class="section feature-section">
+    <view class="feature-grid">
+      <view
+        wx:for="{{features}}"
+        wx:key="name"
+        class="feature-item"
+        data-name="{{item.name}}"
+        bindtap="onFeatureTap"
+      >
+        <text class="feature-icon">{{item.icon}}</text>
+        <text class="feature-name">{{item.name}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-btn">退出登录</view>
+</view>

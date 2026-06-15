@@ -1,0 +1,117 @@
+<!--pages/index/index.wxml-->
+<view class="index-page">
+  <!-- 顶部搜索栏 -->
+  <view class="search-bar">
+    <view class="search-box {{searchKeyword ? 'has-value' : ''}}">
+      <text class="search-icon">&#x1F50D;</text>
+      <input
+        value="{{searchKeyword}}"
+        bindinput="onSearchInput"
+        placeholder="搜索饮品名称"
+        confirm-type="search"
+        class="search-input"
+      />
+      <text wx:if="{{searchKeyword}}" class="search-clear" bindtap="onSearchClear">&times;</text>
+    </view>
+  </view>
+
+  <!-- 主体：左右分栏 -->
+  <view class="main-container">
+    <!-- 左侧分类 -->
+    <scroll-view scroll-y class="category-sidebar">
+      <view
+        wx:for="{{categories}}"
+        wx:key="id"
+        class="cat-item {{activeCategory === item.id ? 'active' : ''}}"
+        data-cat-id="{{item.id}}"
+        bindtap="onCategoryTap"
+      >
+        <text class="cat-icon">{{item.icon}}</text>
+        <text class="cat-name">{{item.name}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 右侧商品列表 -->
+    <scroll-view scroll-y class="drink-content" scroll-into-view="{{searchKeyword ? 'scrollTo-_search' : ('scrollTo-' + activeCategory)}}" scroll-with-animation>
+      <!-- 搜索状态 -->
+      <block wx:if="{{searchKeyword}}">
+        <view class="group" id="scrollTo-_search">
+          <view class="group-title">搜索结果</view>
+          <view class="drink-grid">
+            <view
+              wx:for="{{drinkGroups._search.drinks}}"
+              wx:key="id"
+              class="drink-card"
+              data-drink-id="{{item.id}}"
+              bindtap="goDetail"
+            >
+              <view class="drink-image placeholder-bg" style="background: {{item.bgGradient}}">
+                <text>{{item.image}}</text>
+              </view>
+              <view class="drink-info">
+                <text class="drink-name ellipsis">{{item.name}}</text>
+                <text class="drink-desc ellipsis">{{item.description}}</text>
+                <view class="drink-footer">
+                  <view class="price-box">
+                    <text class="price-symbol">¥</text>
+                    <text class="price-value">{{item.price}}</text>
+                  </view>
+                  <view class="sales-box">
+                    <text>月售 {{item.sales}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+          <view wx:if="{{drinkGroups._search.drinks.length === 0}}" class="empty-tip">
+            <text>暂无相关饮品</text>
+          </view>
+        </view>
+      </block>
+      <!-- 正常分类展示 -->
+      <block wx:else>
+        <view
+          wx:for="{{drinkGroups}}"
+          wx:for-item="groupItem"
+          wx:key="category"
+          class="group"
+          id="scrollTo-{{groupItem.category.id}}"
+        >
+          <view class="group-header">
+            <text class="group-title">{{groupItem.category.name}}</text>
+            <text class="group-count">{{groupItem.drinks.length}}款</text>
+          </view>
+          <view class="drink-grid">
+            <view
+              wx:for="{{groupItem.drinks}}"
+              wx:for-item="drink"
+              wx:key="id"
+              class="drink-card"
+              data-drink-id="{{drink.id}}"
+              bindtap="goDetail"
+            >
+              <view class="drink-image placeholder-bg" style="background: {{drink.bgGradient}}">
+                <text>{{drink.image}}</text>
+              </view>
+              <view wx:if="{{drink.isNew}}" class="tag new-tag">NEW</view>
+              <view wx:if="{{drink.isHot}}" class="tag hot-tag">HOT</view>
+              <view class="drink-info">
+                <text class="drink-name ellipsis">{{drink.name}}</text>
+                <text class="drink-desc ellipsis">{{drink.description}}</text>
+                <view class="drink-footer">
+                  <view class="price-box">
+                    <text class="price-symbol">¥</text>
+                    <text class="price-value">{{drink.price}}</text>
+                  </view>
+                  <view class="sales-box">
+                    <text>月售 {{drink.sales}}</text>
+                  </view>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+</view>
