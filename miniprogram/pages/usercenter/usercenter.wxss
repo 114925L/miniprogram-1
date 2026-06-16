@@ -150,9 +150,6 @@
   position: relative;
 }
 
-.my-coupon-card.disabled {
-  opacity: 0.5;
-}
 
 .mc-left {
   display: flex;
@@ -210,10 +207,6 @@
   color: #fff;
 }
 
-.mc-status.not-received {
-  background: #e5e5e5;
-  color: #999;
-}
 
 .mc-right::after,
 .mc-right::before {

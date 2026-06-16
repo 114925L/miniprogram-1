@@ -83,14 +83,15 @@ Page({
       for (var j = 0; j < userCouponIds.length; j++) {
         if (userCouponIds[j] === c.id) { isReceived = true; break; }
       }
-      list.push({
-        id: c.id,
-        name: c.name,
-        threshold: c.threshold,
-        reduce: c.reduce,
-        type: c.type,
-        isReceived: isReceived
-      });
+      if (isReceived) {
+        list.push({
+          id: c.id,
+          name: c.name,
+          threshold: c.threshold,
+          reduce: c.reduce,
+          type: c.type
+        });
+      }
     }
     this.setData({
       couponCount: userCouponIds.length,
