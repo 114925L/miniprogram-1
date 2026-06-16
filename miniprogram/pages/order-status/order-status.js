@@ -21,27 +21,27 @@ Page({
   },
 
   _startOrderCountdown: function () {
-    let remaining = this.data.estimatedMinutes * 60;
+    var self = this;
+    var remaining = this.data.estimatedMinutes * 60;
 
-    const timer = setInterval(() => {
+    var timer = setInterval(function() {
       remaining--;
       if (remaining <= 0) {
         clearInterval(timer);
-        this.setData({ orderStatus: 'ready', countdown: 0, countdownText: '可取货' });
+        self.setData({ orderStatus: 'ready', countdown: 0, countdownText: '可取货' });
         return;
       }
-      const m = Math.floor(remaining / 60);
-      const s = remaining % 60;
-      this.setData({
+      var m = Math.floor(remaining / 60);
+      var s = remaining % 60;
+      self.setData({
         countdown: m * 60 + s,
-        countdownText: `${m}分${s}秒`
+        countdownText: m + '分' + s + '秒'
       });
     }, 1000);
 
-    // 初始值
-    const initM = Math.floor(remaining / 60);
-    const initS = remaining % 60;
-    this.setData({ countdown: remaining, countdownText: `${initM}分${initS}秒` });
+    var initM = Math.floor(remaining / 60);
+    var initS = remaining % 60;
+    this.setData({ countdown: remaining, countdownText: initM + '分' + initS + '秒' });
   },
 
   // 返回首页

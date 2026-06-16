@@ -75,26 +75,46 @@ Page({
 
   // 加载优惠券
   _loadCoupons: function () {
-    const userCoupons = wx.getStorageSync('userCoupons') || [];
-    const list = allCouponList.map(c => ({
-      ...c,
-      isReceived: userCoupons.includes(c.id)
-    }));
+    var userCouponIds = wx.getStorageSync('userReceivedCoupons') || [];
+    var list = [];
+    for (var i = 0; i < allCouponList.length; i++) {
+      var c = allCouponList[i];
+      var isReceived = false;
+      for (var j = 0; j < userCouponIds.length; j++) {
+        if (userCouponIds[j] === c.id) { isReceived = true; break; }
+      }
+      list.push({
+        id: c.id,
+        name: c.name,
+        threshold: c.threshold,
+        reduce: c.reduce,
+        type: c.type,
+        isReceived: isReceived
+      });
+    }
     this.setData({
-      couponCount: userCoupons.length,
+      couponCount: userCouponIds.length,
       couponList: list
     });
   },
 
   // 计算过滤后的订单
   _filterOrders: function () {
-    const tab = this.data.activeOrderTab;
-    const allOrders = this.data.orders;
-    let filtered = allOrders;
+    var tab = this.data.activeOrderTab;
+    var allOrders = this.data.orders;
+    var filtered = allOrders;
     if (tab > 0 && tab < 3) {
-      filtered = allOrders.filter(o => o.status === tab);
+      var result = [];
+      for (var i = 0; i < allOrders.length; i++) {
+        if (allOrders[i].status === tab) { result.push(allOrders[i]); }
+      }
+      filtered = result;
     } else if (tab === 3) {
-      filtered = allOrders.filter(o => o.status === 2);
+      var result2 = [];
+      for (var j = 0; j < allOrders.length; j++) {
+        if (allOrders[j].status === 2) { result2.push(allOrders[j]); }
+      }
+      filtered = result2;
     }
     this.setData({ filteredOrders: filtered });
   },

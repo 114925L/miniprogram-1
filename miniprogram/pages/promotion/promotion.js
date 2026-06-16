@@ -1,4 +1,4 @@
-// pages/promotion/promotion.js
+﻿// pages/promotion/promotion.js
 const { banners, couponList, secretKillItems } = require('../../constants/index');
 
 Page({
@@ -16,34 +16,30 @@ Page({
   },
 
   onShow: function () {
-    this.setData({ userCoupons: wx.getStorageSync('userCoupons') || [] });
+    this.setData({ userCoupons: wx.getStorageSync('userReceivedCoupons') || [] });
   },
 
-  // Banner 切换
   onBannerChange: function (e) {
     this.setData({ currentBanner: e.detail.current });
   },
 
-  // Banner 点击
   onBannerTap: function (e) {
-    const idx = e.currentTarget.dataset.index;
-    const titles = ['新品上市', '满减活动', '积分兑换'];
+    var idx = e.currentTarget.dataset.index;
+    var titles = ['新品推荐', '满减活动', '积分兑换'];
     wx.showToast({ title: titles[idx], icon: 'none' });
   },
 
-  // 秒杀倒计时
   _startCountdown: function () {
-    let totalSeconds = 7200; // 2 小时
-
-    const timer = setInterval(() => {
+    var totalSeconds = 7200;
+    var timer = setInterval(function() {
       if (totalSeconds <= 0) {
         clearInterval(timer);
         return;
       }
       totalSeconds--;
-      const h = Math.floor(totalSeconds / 3600);
-      const m = Math.floor((totalSeconds % 3600) / 60);
-      const s = totalSeconds % 60;
+      var h = Math.floor(totalSeconds / 3600);
+      var m = Math.floor((totalSeconds % 3600) / 60);
+      var s = totalSeconds % 60;
       this.setData({
         countdown: {
           hours: String(h).padStart(2, '0'),
@@ -51,24 +47,23 @@ Page({
           seconds: String(s).padStart(2, '0')
         }
       });
-    }, 1000);
+    }.bind(this), 1000);
   },
 
-  // 领取优惠券
   onReceiveCoupon: function (e) {
-    const couponId = e.currentTarget.dataset.id;
-    const coupon = this.data.couponList.find(c => c.id === couponId);
+    var couponId = e.currentTarget.dataset.id;
+    var coupon = this.data.couponList.find(function(c) { return c.id === couponId; });
     if (!coupon) return;
 
-    let userCoupons = wx.getStorageSync('userCoupons') || [];
-    if (userCoupons.includes(couponId)) {
-      wx.showToast({ title: '已领取过', icon: 'none' });
+    var userCoupons = wx.getStorageSync('userReceivedCoupons') || [];
+    if (userCoupons.indexOf(couponId) !== -1) {
+      wx.showToast({ title: '已经领取过了', icon: 'none' });
       return;
     }
 
     userCoupons.push(couponId);
-    wx.setStorageSync('userCoupons', userCoupons);
-    this.setData({ userCoupons });
+    wx.setStorageSync('userReceivedCoupons', userCoupons);
+    this.setData({ userCoupons: userCoupons });
 
     wx.showToast({ title: '领取成功', icon: 'success' });
   }

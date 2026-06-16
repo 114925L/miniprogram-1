@@ -71,6 +71,37 @@
   justify-content: space-between;
 }
 
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.qty-btn {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 22rpx;
+  border: 2rpx solid #FF6B35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.qty-btn text {
+  font-size: 28rpx;
+  color: #FF6B35;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.qty-value {
+  font-size: 28rpx;
+  color: #333;
+  min-width: 40rpx;
+  text-align: center;
+}
+
 .item-qty {
   font-size: 24rpx;
   color: #999;

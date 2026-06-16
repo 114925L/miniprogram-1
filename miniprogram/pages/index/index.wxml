@@ -3,7 +3,7 @@
   <!-- 顶部搜索栏 -->
   <view class="search-bar">
     <view class="search-box {{searchKeyword ? 'has-value' : ''}}">
-      <text class="search-icon">&#x1F50D;</text>
+      <text class="search-icon"></text>
       <input
         value="{{searchKeyword}}"
         bindinput="onSearchInput"
