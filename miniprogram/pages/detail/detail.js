@@ -86,11 +86,12 @@ Page({
 
   _calcTotalPriceWithQty: function (qty, selectedToppings, sizeExtra) {
     var drink = this.data.drink;
-    // 饮品价格 * 数量
-    var drinkTotal = Math.round((drink.price + sizeExtra) * qty * 100) / 100;
-    // 加料价格（只算一次，不按数量重复）
-    var toppingTotal = this._calcToppingTotal(selectedToppings);
-    return Math.round((drinkTotal + toppingTotal) * 100) / 100;
+    var unitPrice = drink.price + sizeExtra;
+    selectedToppings.forEach(function(t) {
+      var topping = toppings.find(function(tp) { return tp.name === t; });
+      if (topping) unitPrice += topping.price;
+    });
+    return Math.round(unitPrice * qty * 100) / 100;
   },
 
   _calcToppingTotal: function (selectedToppings) {

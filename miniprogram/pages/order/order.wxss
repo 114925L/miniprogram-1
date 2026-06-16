@@ -65,6 +65,11 @@
   margin-top: 8rpx;
 }
 
+.topping-tag {
+  color: #FF6B35;
+  font-weight: 500;
+}
+
 .item-bottom {
   display: flex;
   align-items: center;

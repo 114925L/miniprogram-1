@@ -79,8 +79,8 @@ Page({
         if (qty < 1) qty = 1;
         if (qty > 99) qty = 99;
         var baseUnitPrice = parseFloat(items[i].unitPrice) || 0;
-        var toppingTotal = parseFloat(items[i].toppingTotal) || 0;
-        var itemTotal = Math.round((baseUnitPrice * qty + toppingTotal) * 100) / 100;
+        var toppingPerUnit = parseFloat(items[i].toppingTotal) || 0;
+        var itemTotal = Math.round((baseUnitPrice + toppingPerUnit) * qty * 100) / 100;
         items[i] = {
           id: items[i].id,
           name: items[i].name,
@@ -91,7 +91,7 @@ Page({
           size: items[i].size,
           sizeExtraPrice: items[i].sizeExtraPrice,
           toppings: items[i].toppings,
-          toppingTotal: toppingTotal,
+          toppingTotal: toppingPerUnit,
           quantity: qty,
           unitPrice: baseUnitPrice,
           totalPrice: itemTotal
