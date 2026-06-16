@@ -19,9 +19,9 @@
             <text wx:if="{{item.sweetness && item.temperature}}"> / </text>
             <text wx:if="{{item.temperature}}">{{item.temperature}}</text>
             <text wx:if="{{item.size}}"> · {{item.size}}</text>
-          </view>
-          <view wx:if="{{item.toppings && item.toppings.length}}" class="topping-tags">
-            <text wx:for="{{item.toppings}}" wx:key="*this" class="topping-tag">{{item}}</text>
+            <block wx:for="{{item.toppings}}" wx:key="*this" wx:for-item="t">
+              <text> · </text><text class="topping-tag">{{t}}</text>
+            </block>
           </view>
           <view class="item-bottom">
             <view class="qty-control">

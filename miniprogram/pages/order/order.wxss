@@ -66,16 +66,8 @@
 }
 
 .topping-tag {
-  display: inline-block;
-  padding: 2rpx 12rpx;
-  margin-left: 8rpx;
-  margin-bottom: 4rpx;
-  border-radius: 8rpx;
-  border: 2rpx solid #FF6B35;
-  background: #fff5f0;
   color: #FF6B35;
-  font-size: 20rpx;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .item-bottom {
