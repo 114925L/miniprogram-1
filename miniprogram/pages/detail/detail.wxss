@@ -177,6 +177,10 @@
   background: #fff5f0;
 }
 
+.topping-btn.active .topping-name {
+  color: #FF6B35;
+}
+
 .topping-name {
   font-size: 26rpx;
   color: #333;

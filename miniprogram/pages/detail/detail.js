@@ -1,4 +1,4 @@
-﻿// pages/detail/detail.js
+// pages/detail/detail.js
 const { drinks, toppings, sizes, defaultSweetness, defaultTemperature, defaultSize, defaultSizeExtraPrice, sweetnessOptions, temperatureOptions } = require('../../constants/index');
 
 Page({
@@ -13,6 +13,7 @@ Page({
     selectedSize: defaultSize,
     selectedSizeExtraPrice: defaultSizeExtraPrice,
     selectedToppings: [],
+    selectedToppingMap: {},
     quantity: 1,
     basePrice: 0,
     totalPrice: 0,
@@ -59,15 +60,19 @@ Page({
   onToppingTap: function (e) {
     var name = e.currentTarget.dataset.name;
     var selectedToppings = this.data.selectedToppings.slice();
+    var selectedToppingMap = Object.assign({}, this.data.selectedToppingMap);
     var idx = selectedToppings.indexOf(name);
     if (idx > -1) {
       selectedToppings.splice(idx, 1);
+      delete selectedToppingMap[name];
     } else {
       selectedToppings.push(name);
+      selectedToppingMap[name] = true;
     }
     var newTotalPrice = this._calcTotalPriceWithQty(this.data.quantity, selectedToppings, this.data.selectedSizeExtraPrice);
     this.setData({
       selectedToppings: selectedToppings,
+      selectedToppingMap: selectedToppingMap,
       totalPrice: newTotalPrice
     });
   },

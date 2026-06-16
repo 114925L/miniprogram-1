@@ -89,7 +89,7 @@
         <view
           wx:for="{{toppings}}"
           wx:key="name"
-          class="topping-btn {{selectedToppings.indexOf(item.name) > -1 ? 'active' : ''}}"
+          class="topping-btn {{selectedToppingMap[item.name] ? 'active' : ''}}"
           data-name="{{item.name}}"
           bindtap="onToppingTap"
         >
