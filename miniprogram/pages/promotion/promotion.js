@@ -1,5 +1,5 @@
 // pages/promotion/promotion.js
-const { banners, couponList: allCouponList } = require('../../constants/index');
+const { banners, couponList: allCouponList, drinks } = require('../../constants/index');
 const db = require('../../utils/db');
 
 Page({
@@ -7,23 +7,37 @@ Page({
     banners: banners,
     currentBanner: 0,
     couponList: allCouponList,
-    secretKillItems: [],
-    countdown: { hours: '00', minutes: '00', seconds: '00' },
-    userCoupons: []
+    userCoupons: [],
+    // 新品推荐饮品
+    newDrinks: [],
+    // 积分兑换饮品（爆款类别作为推荐）
+    hotDrinks: []
   },
 
   onLoad: function () {
-    this._startCountdown();
+    this._loadNewDrinks();
+    this._loadHotDrinks();
   },
 
   onShow: function () {
     this._loadUserCoupons();
   },
 
+  _loadNewDrinks: function () {
+    var newItems = drinks.filter(function(d) { return d.category === 'new'; });
+    this.setData({ newDrinks: newItems });
+  },
+
+  _loadHotDrinks: function () {
+    var hotItems = drinks.filter(function(d) { return d.category === 'hot'; });
+    this.setData({ hotDrinks: hotItems });
+  },
+
   _loadUserCoupons: function () {
     var self = this;
-    db.getUserCoupons().then(res => {
+    db.getUserCoupons().then(function(res) {
       var coupons = [];
+      var receivedIds = [];
       if (res.data && res.data.length > 0) {
         res.data.forEach(function(item) {
           coupons.push({
@@ -35,10 +49,11 @@ Page({
             status: item.status,
             _id: item._id
           });
+          receivedIds.push(item.couponId);
         });
       }
-      self.setData({ userCoupons: coupons });
-    }).catch(err => {
+      self.setData({ userCoupons: coupons, receivedIds: receivedIds });
+    }).catch(function(err) {
       console.error('加载优惠券失败:', err);
     });
   },
@@ -49,29 +64,12 @@ Page({
 
   onBannerTap: function (e) {
     var idx = e.currentTarget.dataset.index;
-    var titles = ['新品推荐', '满减活动', '积分兑换'];
-    wx.showToast({ title: titles[idx], icon: 'none' });
-  },
-
-  _startCountdown: function () {
-    var totalSeconds = 7200;
-    var timer = setInterval(function() {
-      if (totalSeconds <= 0) {
-        clearInterval(timer);
-        return;
-      }
-      totalSeconds--;
-      var h = Math.floor(totalSeconds / 3600);
-      var m = Math.floor((totalSeconds % 3600) / 60);
-      var s = totalSeconds % 60;
-      this.setData({
-        countdown: {
-          hours: String(h).padStart(2, '0'),
-          minutes: String(m).padStart(2, '0'),
-          seconds: String(s).padStart(2, '0')
-        }
-      });
-    }.bind(this), 1000);
+    // 0=新品推荐 -> 饮品页全部分类, 1=满减活动-> 活动页不跳转, 2=积分兑换 -> 饮品页全部分类
+    if (idx === 0) {
+      wx.switchTab({ url: '/pages/index/index' });
+    } else if (idx === 2) {
+      wx.switchTab({ url: '/pages/index/index' });
+    }
   },
 
   onReceiveCoupon: function (e) {
@@ -79,9 +77,8 @@ Page({
     var coupon = allCouponList.find(function(c) { return c.id === couponId; });
     if (!coupon) return;
 
-    // 检查是否已领取（云数据库）
     var self = this;
-    db.getUserCoupons().then(res => {
+    db.getUserCoupons().then(function(res) {
       var exists = false;
       if (res.data) {
         for (var i = 0; i < res.data.length; i++) {
@@ -93,11 +90,10 @@ Page({
         return;
       }
 
-      // 领取到云数据库
-      db.receiveCoupon(coupon).then(() => {
+      db.receiveCoupon(coupon).then(function() {
         wx.showToast({ title: '领取成功', icon: 'success' });
         self._loadUserCoupons();
-      }).catch(err => {
+      }).catch(function(err) {
         if (err.data && err.data.errMsg && err.data.errMsg.indexOf('already_received') !== -1) {
           wx.showToast({ title: '已经领取过了', icon: 'none' });
         } else {
@@ -106,5 +102,21 @@ Page({
         }
       });
     });
+  },
+
+  // 新品推荐卡片点击 -> 跳转饮品页
+  onNewDrinkTap: function (e) {
+    var drinkId = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '/pages/detail/detail?drinkId=' + drinkId });
+  },
+
+  // 积分兑换推荐卡片点击 -> 跳转饮品页
+  onHotDrinkTap: function (e) {
+    var drinkId = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: '/pages/detail/detail?drinkId=' + drinkId });
+  },
+
+  onNewUserTap: function () {
+    wx.showToast({ title: '新人专享', icon: 'none' });
   }
 });

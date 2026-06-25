@@ -23,33 +23,75 @@
     ></view>
   </view>
 
-  <!-- 限时秒杀 -->
-  <view class="section kill-section">
+  <!-- 新品推荐 -->
+  <view class="section new-section">
+    <view class="section-header">
+      <view class="section-title">
+        <text class="sparkle-icon">✨</text>
+        <text>新品推荐</text>
+      </view>
+      <text class="section-more">查看全部 ></text>
+    </view>
+    <scroll-view scroll-x class="new-scroll">
+      <view class="new-list">
+        <view
+          wx:for="{{newDrinks}}"
+          wx:key="id"
+          class="new-card"
+          data-id="{{item.id}}"
+          bindtap="onNewDrinkTap"
+        >
+          <view class="new-image placeholder-bg" style="background: {{item.bgGradient}}">
+            <text>{{item.image}}</text>
+          </view>
+          <view class="new-info">
+            <text class="new-name ellipsis">{{item.name}}</text>
+            <text class="new-desc">{{item.description}}</text>
+            <view class="new-bottom">
+              <view class="new-price">
+                <text class="price-symbol">¥</text>
+                <text class="price-num">{{item.price}}</text>
+              </view>
+              <text class="new-sales">已售 {{item.sales}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 积分兑换推荐 -->
+  <view class="section hot-section">
     <view class="section-header">
       <view class="section-title">
         <text class="fire-icon">🔥</text>
-        <text>限时秒杀</text>
+        <text>人气爆款</text>
       </view>
-      <view class="countdown">
-        <text class="cd-text">距结束</text>
-        <text class="cd-time">{{countdown.hours}}:{{countdown.minutes}}:{{countdown.seconds}}</text>
-      </view>
+      <text class="section-more">查看全部 ></text>
     </view>
-    <scroll-view scroll-x class="kill-scroll">
-      <view class="kill-list">
+    <scroll-view scroll-x class="hot-scroll">
+      <view class="hot-list">
         <view
-          wx:for="{{secretKillItems}}"
+          wx:for="{{hotDrinks}}"
           wx:key="id"
-          class="kill-card"
+          class="hot-card"
+          data-id="{{item.id}}"
+          bindtap="onHotDrinkTap"
         >
-          <view class="kill-image placeholder-bg" style="background: {{item.gradient}}">
+          <view class="hot-image placeholder-bg" style="background: {{item.bgGradient}}">
             <text>{{item.image}}</text>
           </view>
-          <view class="kill-price-row">
-            <text class="kill-price">¥{{item.price}}</text>
-            <text class="kill-original">¥{{item.originalPrice}}</text>
+          <view class="hot-info">
+            <text class="hot-name ellipsis">{{item.name}}</text>
+            <text class="hot-desc">{{item.description}}</text>
+            <view class="hot-bottom">
+              <view class="hot-price">
+                <text class="price-symbol">¥</text>
+                <text class="price-num">{{item.price}}</text>
+              </view>
+              <text class="hot-sales">已售 {{item.sales}}</text>
+            </view>
           </view>
-          <text class="kill-name ellipsis">{{item.name}}</text>
         </view>
       </view>
     </scroll-view>
@@ -62,7 +104,7 @@
       <view
         wx:for="{{couponList}}"
         wx:key="id"
-        class="coupon-card {{userCoupons.indexOf(item.id) > -1 ? 'received' : ''}}"
+        class="coupon-card {{receivedIds.indexOf(item.id) > -1 ? 'received' : ''}}"
       >
         <view class="coupon-left">
           <view class="coupon-amount">
@@ -76,11 +118,11 @@
           </view>
           <view class="coupon-type">{{item.type}}</view>
           <view
-            class="coupon-btn {{userCoupons.indexOf(item.id) > -1 ? 'btn-disabled' : ''}}"
+            class="coupon-btn {{receivedIds.indexOf(item.id) > -1 ? 'btn-disabled' : ''}}"
             data-id="{{item.id}}"
             bindtap="onReceiveCoupon"
           >
-            {{userCoupons.indexOf(item.id) > -1 ? '已领取' : '领取'}}
+            {{receivedIds.indexOf(item.id) > -1 ? '已领取' : '领取'}}
           </view>
         </view>
         <view class="coupon-cut-left"></view>
@@ -97,7 +139,7 @@
         <text class="nu-title">新人专享</text>
         <text class="nu-desc">首单立减 ¥5</text>
       </view>
-      <view class="nu-btn">立即查看</view>
+      <view class="nu-btn" bindtap="onNewUserTap">立即查看</view>
     </view>
   </view>
 </view>

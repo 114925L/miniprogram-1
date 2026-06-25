@@ -73,78 +73,167 @@
   color: #333;
 }
 
+.sparkle-icon {
+  margin-right: 8rpx;
+}
+
 .fire-icon {
   margin-right: 8rpx;
 }
 
-.countdown {
-  display: flex;
-  align-items: center;
-  gap: 12rpx;
-}
-
-.cd-text {
-  font-size: 22rpx;
+.section-more {
+  font-size: 24rpx;
   color: #999;
 }
 
-.cd-time {
-  font-size: 24rpx;
-  color: #FF6B35;
-  font-weight: 600;
-  background: #fff5f0;
-  padding: 4rpx 16rpx;
-  border-radius: 8rpx;
-}
-
-/* 秒杀 */
-.kill-scroll {
+/* 新品推荐横向滚动 */
+.new-scroll {
   white-space: nowrap;
 }
 
-.kill-list {
+.new-list {
   display: inline-flex;
   gap: 20rpx;
 }
 
-.kill-card {
-  width: 220rpx;
+.new-card {
+  width: 280rpx;
   flex-shrink: 0;
-}
-
-.kill-image {
-  width: 220rpx;
-  height: 220rpx;
   border-radius: 16rpx;
-  margin-bottom: 12rpx;
+  overflow: hidden;
+  background: #fff;
+  border: 2rpx solid #f0f0f0;
 }
 
-.kill-image text {
-  font-size: 60rpx;
+.new-image {
+  width: 280rpx;
+  height: 280rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.kill-price-row {
+.new-image text {
+  font-size: 80rpx;
+}
+
+.new-info {
+  padding: 16rpx 20rpx 20rpx;
+}
+
+.new-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+}
+
+.new-desc {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 6rpx;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.new-bottom {
   display: flex;
   align-items: baseline;
-  margin-bottom: 6rpx;
+  justify-content: space-between;
+  margin-top: 12rpx;
 }
 
-.kill-price {
-  font-size: 32rpx;
-  font-weight: 700;
-  color: #FF6B35;
+.new-price {
+  display: flex;
+  align-items: baseline;
 }
 
-.kill-original {
+.price-symbol {
   font-size: 22rpx;
-  color: #ccc;
-  text-decoration: line-through;
-  margin-left: 12rpx;
+  color: #FF6B35;
+  font-weight: 600;
 }
 
-.kill-name {
-  font-size: 24rpx;
-  color: #666;
+.price-num {
+  font-size: 34rpx;
+  color: #FF6B35;
+  font-weight: 700;
+}
+
+.new-sales {
+  font-size: 20rpx;
+  color: #ccc;
+}
+
+/* 人气爆款横向滚动 */
+.hot-scroll {
+  white-space: nowrap;
+}
+
+.hot-list {
+  display: inline-flex;
+  gap: 20rpx;
+}
+
+.hot-card {
+  width: 280rpx;
+  flex-shrink: 0;
+  border-radius: 16rpx;
+  overflow: hidden;
+  background: #fff;
+  border: 2rpx solid #f0f0f0;
+}
+
+.hot-image {
+  width: 280rpx;
+  height: 280rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hot-image text {
+  font-size: 80rpx;
+}
+
+.hot-info {
+  padding: 16rpx 20rpx 20rpx;
+}
+
+.hot-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+}
+
+.hot-desc {
+  font-size: 22rpx;
+  color: #999;
+  margin-top: 6rpx;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hot-bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 12rpx;
+}
+
+.hot-price {
+  display: flex;
+  align-items: baseline;
+}
+
+.hot-sales {
+  font-size: 20rpx;
+  color: #ccc;
 }
 
 /* 优惠券 */

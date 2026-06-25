@@ -242,13 +242,6 @@ const couponList = [
   { id: 'c4', name: '首单立减5', threshold: 10, reduce: 5, type: '新客' }
 ];
 
-const secretKillItems = [
-  { id: 'sk1', name: '拿铁咖啡', price: 8, originalPrice: 14, image: '☕', gradient: 'linear-gradient(135deg, #434343 0%, #000000 100%)' },
-  { id: 'sk2', name: '四季春珍珠奶茶', price: 8, originalPrice: 12, image: '🍵', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
-  { id: 'sk3', name: '葡萄芋圆冻冻', price: 12, originalPrice: 16, image: '🍇', gradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
-  { id: 'sk4', name: '摩卡咖啡', price: 13, originalPrice: 18, image: '☕', gradient: 'linear-gradient(135deg, #c7c994 0%, #dbd5b1 100%)' }
-];
-
 module.exports = {
   categories,
   sweetnessOptions,
@@ -261,6 +254,5 @@ module.exports = {
   defaultSizeExtraPrice,
   drinks,
   banners,
-  couponList,
-  secretKillItems
+  couponList
 };
