@@ -41,9 +41,9 @@ Page({
   },
 
   cancelPay: function () {
-    // 取消支付：删除刚创建的订单
+    // 取消支付：订单恢复为待付款
     var self = this;
-    db.updateOrderStatus(this.data.orderNo, 3).then(function () {
+    db.updateOrderStatus(this.data.orderNo, 0).then(function () {
       wx.navigateBack();
     }).catch(function (err) {
       console.error('取消订单失败:', err);

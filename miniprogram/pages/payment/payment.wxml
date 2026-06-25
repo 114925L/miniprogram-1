@@ -30,4 +30,10 @@
     <view class="pt-icon">💡</view>
     <text class="pt-text">确认支付后订单将进入制作流程</text>
   </view>
+
+  <!-- 底部操作栏 -->
+  <view class="pay-footer">
+    <view class="pay-btn-cancel" bindtap="cancelPay">取消</view>
+    <view class="pay-btn-confirm" bindtap="confirmPay">确认支付</view>
+  </view>
 </view>
