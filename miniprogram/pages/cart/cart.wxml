@@ -18,9 +18,9 @@
         <view class="ci-name">{{item.name}}</view>
         <view class="ci-spec">
           <text wx:if="{{item.sweetness}}">{{item.sweetness}}</text>
-          <text wx:if="{{item.sweetness && item.temperature}} / </text>
+          <text wx:if="{{item.sweetness && item.temperature}}" class="ci-sep">/</text>
           <text wx:if="{{item.temperature}}">{{item.temperature}}</text>
-          <text wx:if="{{item.size}} · {{item.size}}</text>
+          <text wx:if="{{item.size}}" class="ci-sep">· {{item.size}}</text>
         </view>
         <view class="ci-bottom">
           <view class="ci-price">

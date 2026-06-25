@@ -87,6 +87,11 @@
   color: #999;
 }
 
+.ci-sep {
+  color: #ccc;
+  margin: 0 4rpx;
+}
+
 .ci-bottom {
   display: flex;
   align-items: center;
