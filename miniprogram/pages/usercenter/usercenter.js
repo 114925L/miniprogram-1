@@ -76,7 +76,7 @@ Page({
 
       // 订单 — 转换为模板需要的格式
       var rawOrders = results[3].data || [];
-      var statusMap = { 0: '待付款', 1: '待取货', 2: '已完成', 3: '已取消' };
+      var statusMap = { 0: '待付款', 1: '待制作', 2: '制作中', 3: '已取消', 4: '已付款' };
       var orders = rawOrders.map(function(o) {
         // 提取 emoji 和名称
         var itemsArr = o.items || [];

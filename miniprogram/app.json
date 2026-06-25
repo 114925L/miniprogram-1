@@ -6,6 +6,7 @@
     "pages/promotion/promotion",
     "pages/usercenter/usercenter",
     "pages/order/order",
+    "pages/payment/payment",
     "pages/order-status/order-status"
   ],
   "window": {

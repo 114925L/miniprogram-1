@@ -1,0 +1,33 @@
+<!--pages/payment/payment.wxml-->
+<view class="payment-page">
+  <!-- 顶部订单摘要 -->
+  <view class="pay-header">
+    <view class="ph-order">
+      <text class="ph-label">订单号</text>
+      <text class="ph-no">{{orderNo}}</text>
+    </view>
+    <view class="ph-amount">
+      <text class="ph-amount-label">应付金额</text>
+      <view class="ph-price">
+        <text class="ph-currency">¥</text>
+        <text class="ph-num">{{finalAmount}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支付方式 -->
+  <view class="section pay-method-section">
+    <view class="section-title">支付方式</view>
+    <view class="pay-option {{paymentMethod === 'wechat' ? 'active' : ''}}" data-method="wechat" bindtap="onPaymentTap">
+      <text class="pm-icon">💚</text>
+      <text class="pm-name">微信支付</text>
+      <view wx:if="{{paymentMethod === 'wechat'}}" class="pm-check"></view>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="section pay-tips-section">
+    <view class="pt-icon">💡</view>
+    <text class="pt-text">确认支付后订单将进入制作流程</text>
+  </view>
+</view>

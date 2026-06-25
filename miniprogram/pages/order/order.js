@@ -211,7 +211,7 @@ Page({
       app.clearCart();
 
       wx.redirectTo({
-        url: '/pages/order-status/order-status?orderNo=' + orderNo + '&queueCount=' + queueCount + '&estimatedMinutes=' + estimatedMinutes
+        url: '/pages/payment/payment?orderNo=' + orderNo + '&queueCount=' + queueCount + '&estimatedMinutes=' + estimatedMinutes + '&finalAmount=' + self.data.finalAmount
       });
     }).catch(function(err) {
       console.error('下单失败:', err);
