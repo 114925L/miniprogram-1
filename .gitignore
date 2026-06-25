@@ -1,0 +1,26 @@
+# --- 依赖目录 ---
+node_modules/
+cloudfunctions/*/node_modules/
+miniprogram_npm/
+
+# --- 系统文件 ---
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# --- 文档格式 ---
+*.docx
+*.doc
+
+# --- 项目私密配置 ---
+project.private.config.json
+*.local.json
+
+# --- Claude 缓存 ---
+.claude/
+
+# --- 构建产物 ---
+miniprogram/dev/
+dist/
