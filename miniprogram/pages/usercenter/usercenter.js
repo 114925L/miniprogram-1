@@ -1,61 +1,25 @@
 // pages/usercenter/usercenter.js
 const { couponList: allCouponList } = require('../../constants/index');
+const db = require('../../utils/db');
 
 Page({
   data: {
     userInfo: {
       nickname: '奶茶爱好者',
       avatar: '😊',
-      uid: 'NT20250612001'
+      uid: ''
     },
-    points: 1280,
+    points: 0,
     couponCount: 0,
     couponList: [],
-    orderCount: 12,
-    favoriteCount: 8,
-    signInStreak: 5,
+    orderCount: 0,
+    favoriteCount: 0,
+    signInStreak: 0,
     canSignIn: true,
     activeOrderTab: 0,
     filteredOrders: [],
+    orders: [],
     orderTabs: ['全部', '待付款', '待取货', '已完成'],
-    orders: [
-      {
-        id: 'NT202506121030450001',
-        items: ['🧋', '☕'],
-        names: ['经典珍珠奶茶', '拿铁咖啡'],
-        amount: 30,
-        status: 0,
-        statusText: '待付款',
-        time: '2025-06-12 10:30'
-      },
-      {
-        id: 'NT202506111500220003',
-        items: ['🍇', '🍓'],
-        names: ['多肉葡萄', '芝芝莓莓'],
-        amount: 36,
-        status: 1,
-        statusText: '待取货',
-        time: '2025-06-11 15:00'
-      },
-      {
-        id: 'NT202506100900110002',
-        items: ['🧋'],
-        names: ['黑糖波波牛奶'],
-        amount: 15,
-        status: 2,
-        statusText: '已完成',
-        time: '2025-06-10 09:00'
-      },
-      {
-        id: 'NT202506081400550004',
-        items: ['☕'],
-        names: ['美式咖啡'],
-        amount: 14,
-        status: 3,
-        statusText: '已取消',
-        time: '2025-06-08 14:00'
-      }
-    ],
     features: [
       { icon: '📍', name: '收货地址' },
       { icon: '📞', name: '联系客服' },
@@ -65,16 +29,109 @@ Page({
   },
 
   onLoad: function () {
-    this._loadCoupons();
-    this._filterOrders();
+    this._loadAllData();
   },
 
   onShow: function () {
-    this._loadCoupons();
+    this._loadAllData();
   },
 
-  // 加载优惠券
-  _loadCoupons: function () {
+  _loadAllData: function () {
+    var self = this;
+    var app = getApp();
+
+    // 并行加载: 用户信息 + 优惠券 + 签到 + 订单
+    Promise.all([
+      db.getUserInfo(),
+      db.getUserCoupons(),
+      db.getSignInInfo(),
+      db.getOrders()
+    ]).then(function(results) {
+      // 用户信息
+      var userInfo = results[0].data && results[0].data.length > 0 ? results[0].data[0] : null;
+      var points = userInfo ? (userInfo.points || 0) : (app.globalData.points || 0);
+      var nickname = userInfo ? (userInfo.nickname || '奶茶爱好者') : '奶茶爱好者';
+      var avatar = userInfo ? (userInfo.avatar || '😊') : '😊';
+      var uid = userInfo ? (userInfo.uid || '') : '';
+
+      // 优惠券
+      var couponData = results[1].data || [];
+      var couponList = [];
+      for (var i = 0; i < couponData.length; i++) {
+        couponList.push({
+          id: couponData[i].couponId,
+          name: couponData[i].name,
+          threshold: couponData[i].threshold,
+          reduce: couponData[i].reduce,
+          type: couponData[i].type,
+          status: couponData[i].status,
+          _id: couponData[i]._id
+        });
+      }
+
+      // 签到
+      var signIn = results[2].data || {};
+      var streak = signIn.streak || 0;
+      var canSignIn = signIn.canSignIn !== false;
+
+      // 订单 — 转换为模板需要的格式
+      var rawOrders = results[3].data || [];
+      var statusMap = { 0: '待付款', 1: '待取货', 2: '已完成', 3: '已取消' };
+      var orders = rawOrders.map(function(o) {
+        // 提取 emoji 和名称
+        var itemsArr = o.items || [];
+        var emojis = itemsArr.map(function(it) { return it.image || '🧋'; });
+        var names = itemsArr.map(function(it) { return it.name || ''; });
+        // 格式化时间
+        var timeStr = '';
+        if (o.createTime) {
+          var dt = new Date(o.createTime);
+          timeStr = dt.getFullYear() + '-' +
+            String(dt.getMonth() + 1).padStart(2, '0') + '-' +
+            String(dt.getDate()).padStart(2, '0') + ' ' +
+            String(dt.getHours()).padStart(2, '0') + ':' +
+            String(dt.getMinutes()).padStart(2, '0');
+        }
+        var st = o.status !== undefined ? o.status : 0;
+        return {
+          id: o.orderNo || o._id,
+          items: emojis,
+          names: names,
+          amount: o.totalAmount || 0,
+          status: st,
+          statusText: statusMap[st] || '待付款',
+          time: timeStr
+        };
+      });
+
+      self.setData({
+        userInfo: { nickname: nickname, avatar: avatar, uid: uid },
+        points: points,
+        couponCount: couponList.length,
+        couponList: couponList,
+        orderCount: orders.length,
+        signInStreak: streak,
+        canSignIn: canSignIn,
+        orders: orders
+      });
+
+      self._filterOrders();
+    }).catch(function(err) {
+      console.error('加载用户数据失败:', err);
+      // 降级: 使用 app.globalData
+      self.setData({
+        points: app.globalData.points || 0,
+        userInfo: app.globalData.userInfo || self.data.userInfo,
+        signInStreak: app.globalData.signInStreak || 0,
+        canSignIn: app.globalData.canSignIn !== false
+      });
+      self._loadCouponsFromCache();
+      self._filterOrders();
+    });
+  },
+
+  _loadCouponsFromCache: function () {
+    var self = this;
     var userCouponIds = wx.getStorageSync('userReceivedCoupons') || [];
     var list = [];
     for (var i = 0; i < allCouponList.length; i++) {
@@ -93,13 +150,9 @@ Page({
         });
       }
     }
-    this.setData({
-      couponCount: userCouponIds.length,
-      couponList: list
-    });
+    self.setData({ couponList: list, couponCount: list.length });
   },
 
-  // 计算过滤后的订单
   _filterOrders: function () {
     var tab = this.data.activeOrderTab;
     var allOrders = this.data.orders;
@@ -120,41 +173,41 @@ Page({
     this.setData({ filteredOrders: filtered });
   },
 
-  // 签到
   onSignIn: function () {
+    var self = this;
     if (!this.data.canSignIn) {
       wx.showToast({ title: '今日已签到', icon: 'none' });
       return;
     }
 
-    let points = this.data.points + 10;
-    let streak = this.data.signInStreak + 1;
+    db.signIn().then(function(res) {
+      var data = res.data;
+      var newPoints = (self.data.points || 0) + 10;
+      var newStreak = (data && data.streak) || (self.data.signInStreak + 1);
 
-    wx.setStorageSync('signInStreak', streak);
-    wx.setStorageSync('lastSignIn', new Date().toDateString());
+      self.setData({
+        points: newPoints,
+        signInStreak: newStreak,
+        canSignIn: false
+      });
 
-    this.setData({
-      points: points,
-      signInStreak: streak,
-      canSignIn: false
+      wx.showToast({ title: '签到成功 +10积分', icon: 'success' });
+    }).catch(function(err) {
+      console.error('签到失败:', err);
+      wx.showToast({ title: '签到失败，请重试', icon: 'none' });
     });
-
-    wx.showToast({ title: '签到成功 +10积分', icon: 'success' });
   },
 
-  // 订单 Tab 切换
   onOrderTabTap: function (e) {
     this.setData({ activeOrderTab: e.currentTarget.dataset.index });
     this._filterOrders();
   },
 
-  // 功能点击
   onFeatureTap: function (e) {
     const name = e.currentTarget.dataset.name;
     wx.showToast({ title: name, icon: 'none' });
   },
 
-  // 订单点击
   onOrderTap: function (e) {
     const orderId = e.currentTarget.dataset.id;
     wx.showToast({ title: '订单 ' + orderId, icon: 'none' });

@@ -1,27 +1,87 @@
-﻿// app.js
+// app.js
+const db = require('./utils/db');
+
 App({
+  globalData: {
+    userInfo: null,
+    openid: '',
+    cart: [],
+    points: 0,
+    signInStreak: 0,
+    canSignIn: true,
+    tabBarIndex: 0
+  },
+
   onLaunch: function () {
     if (!wx.cloud) {
       console.error('请升级到2.2.3以上基础库');
-    } else {
-      wx.cloud.init({
-        env: 'cloudbase-d7g83ke4n84c0550a',
-        traceUser: true,
-      });
+      return;
     }
 
-    this.globalData = {
-      userInfo: null,
-      cart: wx.getStorageSync('cart') || [],
-      coupons: [],
-      points: 1280,
-      tabBarIndex: 0
-    };
+    wx.cloud.init({
+      env: 'cloudbase-d7g83ke4n84c0550a',
+      traceUser: true,
+    });
+
+    // 1. 获取 openid
+    wx.cloud.callFunction({
+      name: 'cloud-business',
+      data: { type: 'getUserInfo' }
+    }).then(res => {
+      this.globalData.openid = wx.cloud.getWXContext().OPENID || '';
+
+      // 2. 并行加载用户信息 + 购物车 + 签到
+      Promise.all([
+        this._loadUserInfo(),
+        this._loadCart(),
+        this._loadSignIn()
+      ]).then(() => {
+        console.log('云数据加载完成');
+      });
+    }).catch(err => {
+      console.error('初始化失败:', err);
+    });
   },
 
-  // 添加商品到购物车
+  // ============ 云数据加载 ============
+
+  _loadUserInfo: function () {
+    var self = this;
+    return db.getUserInfo().then(res => {
+      if (res.data.length > 0) {
+        var u = res.data[0];
+        self.globalData.points = u.points || 0;
+        self.globalData.userInfo = {
+          nickname: u.nickname || '奶茶爱好者',
+          avatar: u.avatar || '😊',
+          uid: u.uid || ''
+        };
+      }
+    });
+  },
+
+  _loadCart: function () {
+    var self = this;
+    return db.getCart().then(res => {
+      self.globalData.cart = res.data || [];
+    });
+  },
+
+  _loadSignIn: function () {
+    var self = this;
+    return db.getSignInInfo().then(res => {
+      if (res.data && res.data.length > 0) {
+        var info = res.data[0];
+        self.globalData.signInStreak = info.streak || 0;
+        self.globalData.canSignIn = info.canSignIn !== false;
+      }
+    });
+  },
+
+  // ============ 购物车（云数据库版本） ============
+
   addToCart: function (item) {
-    var cart = wx.getStorageSync('cart') || [];
+    var cart = this.globalData.cart.slice();
     var key = item.key || (item.id + '_' + item.size + '_' + item.sweetness + '_' + item.temperature);
     var existIdx = -1;
     for (var i = 0; i < cart.length; i++) {
@@ -31,26 +91,28 @@ App({
       cart[existIdx].quantity += item.quantity;
     } else {
       cart.push({ key: key });
-      cart[cart.length - 1].id = item.id;
-      cart[cart.length - 1].name = item.name;
-      cart[cart.length - 1].image = item.image;
-      cart[cart.length - 1].bgGradient = item.bgGradient;
-      cart[cart.length - 1].sweetness = item.sweetness;
-      cart[cart.length - 1].temperature = item.temperature;
-      cart[cart.length - 1].size = item.size;
-      cart[cart.length - 1].sizeExtraPrice = item.sizeExtraPrice;
-      cart[cart.length - 1].toppings = item.toppings;
-      cart[cart.length - 1].toppingTotal = item.toppingTotal;
-      cart[cart.length - 1].quantity = item.quantity;
-      cart[cart.length - 1].unitPrice = item.unitPrice;
-      cart[cart.length - 1].totalPrice = item.totalPrice;
+      var c = cart[cart.length - 1];
+      c.id = item.id;
+      c.name = item.name;
+      c.image = item.image;
+      c.bgGradient = item.bgGradient;
+      c.sweetness = item.sweetness;
+      c.temperature = item.temperature;
+      c.size = item.size;
+      c.sizeExtraPrice = item.sizeExtraPrice;
+      c.toppings = item.toppings;
+      c.toppingTotal = item.toppingTotal;
+      c.quantity = item.quantity;
+      c.unitPrice = item.unitPrice;
+      c.totalPrice = item.totalPrice;
     }
-    wx.setStorageSync('cart', cart);
     this.globalData.cart = cart;
+    // 同步到云数据库
+    return db.updateCart(cart);
   },
 
   updateCart: function (key, quantity) {
-    var cart = wx.getStorageSync('cart') || [];
+    var cart = this.globalData.cart.slice();
     var idx = -1;
     for (var i = 0; i < cart.length; i++) {
       if (cart[i].key === key) { idx = i; break; }
@@ -62,17 +124,17 @@ App({
         cart[idx].quantity = quantity;
       }
     }
-    wx.setStorageSync('cart', cart);
     this.globalData.cart = cart;
+    return db.updateCart(cart);
   },
 
   clearCart: function () {
-    wx.setStorageSync('cart', []);
     this.globalData.cart = [];
+    return db.updateCart([]);
   },
 
   getCartCount: function () {
-    var cart = wx.getStorageSync('cart') || [];
+    var cart = this.globalData.cart;
     var sum = 0;
     for (var i = 0; i < cart.length; i++) { sum += cart[i].quantity; }
     return sum;

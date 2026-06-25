@@ -19,7 +19,6 @@ Page({
     const groups = {};
     const cats = this.data.categories;
 
-    // 全部分类合并
     groups['all'] = { category: { id: 'all', name: '全部', icon: '🧋' }, drinks: drinks };
 
     cats.forEach(cat => {
@@ -32,13 +31,11 @@ Page({
     this.setData({ drinkGroups: groups });
   },
 
-  // 分类点击
   onCategoryTap: function (e) {
     const { catId } = e.currentTarget.dataset;
     this.setData({ activeCategory: catId });
   },
 
-  // 搜索
   onSearchInput: function (e) {
     const keyword = e.detail.value.trim().toLowerCase();
     this.setData({ searchKeyword: keyword });
@@ -66,7 +63,6 @@ Page({
     this.groupDrinksByCategory();
   },
 
-  // 跳转详情
   goDetail: function (e) {
     const { drinkId } = e.currentTarget.dataset;
     const drink = drinks.find(d => d.id === drinkId);

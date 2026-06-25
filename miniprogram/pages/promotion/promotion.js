@@ -1,13 +1,14 @@
-﻿// pages/promotion/promotion.js
-const { banners, couponList, secretKillItems } = require('../../constants/index');
+// pages/promotion/promotion.js
+const { banners, couponList: allCouponList } = require('../../constants/index');
+const db = require('../../utils/db');
 
 Page({
   data: {
     banners: banners,
     currentBanner: 0,
-    couponList: couponList,
-    secretKillItems: secretKillItems,
-    countdown: { hours: 0, minutes: 0, seconds: 0 },
+    couponList: allCouponList,
+    secretKillItems: [],
+    countdown: { hours: '00', minutes: '00', seconds: '00' },
     userCoupons: []
   },
 
@@ -16,7 +17,30 @@ Page({
   },
 
   onShow: function () {
-    this.setData({ userCoupons: wx.getStorageSync('userReceivedCoupons') || [] });
+    this._loadUserCoupons();
+  },
+
+  _loadUserCoupons: function () {
+    var self = this;
+    db.getUserCoupons().then(res => {
+      var coupons = [];
+      if (res.data && res.data.length > 0) {
+        res.data.forEach(function(item) {
+          coupons.push({
+            id: item.couponId,
+            name: item.name,
+            threshold: item.threshold,
+            reduce: item.reduce,
+            type: item.type,
+            status: item.status,
+            _id: item._id
+          });
+        });
+      }
+      self.setData({ userCoupons: coupons });
+    }).catch(err => {
+      console.error('加载优惠券失败:', err);
+    });
   },
 
   onBannerChange: function (e) {
@@ -52,19 +76,35 @@ Page({
 
   onReceiveCoupon: function (e) {
     var couponId = e.currentTarget.dataset.id;
-    var coupon = this.data.couponList.find(function(c) { return c.id === couponId; });
+    var coupon = allCouponList.find(function(c) { return c.id === couponId; });
     if (!coupon) return;
 
-    var userCoupons = wx.getStorageSync('userReceivedCoupons') || [];
-    if (userCoupons.indexOf(couponId) !== -1) {
-      wx.showToast({ title: '已经领取过了', icon: 'none' });
-      return;
-    }
+    // 检查是否已领取（云数据库）
+    var self = this;
+    db.getUserCoupons().then(res => {
+      var exists = false;
+      if (res.data) {
+        for (var i = 0; i < res.data.length; i++) {
+          if (res.data[i].couponId === couponId) { exists = true; break; }
+        }
+      }
+      if (exists) {
+        wx.showToast({ title: '已经领取过了', icon: 'none' });
+        return;
+      }
 
-    userCoupons.push(couponId);
-    wx.setStorageSync('userReceivedCoupons', userCoupons);
-    this.setData({ userCoupons: userCoupons });
-
-    wx.showToast({ title: '领取成功', icon: 'success' });
+      // 领取到云数据库
+      db.receiveCoupon(coupon).then(() => {
+        wx.showToast({ title: '领取成功', icon: 'success' });
+        self._loadUserCoupons();
+      }).catch(err => {
+        if (err.data && err.data.errMsg && err.data.errMsg.indexOf('already_received') !== -1) {
+          wx.showToast({ title: '已经领取过了', icon: 'none' });
+        } else {
+          console.error('领取失败:', err);
+          wx.showToast({ title: '领取失败，请重试', icon: 'none' });
+        }
+      });
+    });
   }
 });

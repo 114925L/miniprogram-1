@@ -130,7 +130,9 @@ Page({
     var app = getApp();
 
     var toppingTotal = this._calcToppingTotal(this.data.selectedToppings);
+    var key = drink.id + '_' + this.data.selectedSize + '_' + this.data.selectedSweetness + '_' + this.data.selectedTemperature;
     var item = {
+      key: key,
       id: drink.id,
       name: drink.name,
       image: drink.image,
@@ -146,18 +148,13 @@ Page({
       totalPrice: this._calcTotalPriceWithQty(this.data.quantity, this.data.selectedToppings, this.data.selectedSizeExtraPrice)
     };
 
-    app.addToCart(item);
-    this._showCartAnim();
-
-    wx.showToast({ title: '加入购物车', icon: 'success', duration: 1500 });
-
-    setTimeout(function() {
-      wx.showToast({
-        title: '跳转到购物车查看当前商品',
-        icon: 'none',
-        duration: 2000
-      });
-    }, 1500);
+    app.addToCart(item).then(() => {
+      this._showCartAnim();
+      wx.showToast({ title: '加入购物车', icon: 'success', duration: 1500 });
+    }).catch(err => {
+      console.error('加入购物车失败:', err);
+      wx.showToast({ title: '添加失败，请重试', icon: 'none' });
+    });
   },
 
   buyNow: function () {
@@ -166,7 +163,9 @@ Page({
     var drink = this.data.drink;
 
     var toppingTotal = this._calcToppingTotal(this.data.selectedToppings);
+    var key = drink.id + '_' + this.data.selectedSize + '_' + this.data.selectedSweetness + '_' + this.data.selectedTemperature;
     var item = {
+      key: key,
       id: drink.id,
       name: drink.name,
       image: drink.image,

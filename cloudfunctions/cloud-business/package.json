@@ -1,0 +1,9 @@
+{
+  "name": "cloud-business",
+  "version": "1.0.0",
+  "description": "奶茶小铺业务云函数 - 购物车/优惠券/签到/订单/用户",
+  "main": "index.js",
+  "dependencies": {
+    "wx-server-sdk": "~2.4.0"
+  }
+}

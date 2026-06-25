@@ -1,4 +1,6 @@
 // pages/order-status/order-status.js
+const db = require('../../utils/db');
+
 Page({
   data: {
     orderNo: '',
@@ -16,7 +18,6 @@ Page({
       estimatedMinutes: parseInt(options.estimatedMinutes) || 30
     });
 
-    // 倒计时
     this._startOrderCountdown();
   },
 
@@ -29,6 +30,11 @@ Page({
       if (remaining <= 0) {
         clearInterval(timer);
         self.setData({ orderStatus: 'ready', countdown: 0, countdownText: '可取货' });
+
+        // 更新订单状态到云数据库
+        db.updateOrderStatus(self.data.orderNo, 2).catch(function(err) {
+          console.error('更新订单状态失败:', err);
+        });
         return;
       }
       var m = Math.floor(remaining / 60);
@@ -44,12 +50,10 @@ Page({
     this.setData({ countdown: remaining, countdownText: initM + '分' + initS + '秒' });
   },
 
-  // 返回首页
   goHome: function () {
     wx.switchTab({ url: '/pages/index/index' });
   },
 
-  // 继续逛逛
   continueShopping: function () {
     wx.switchTab({ url: '/pages/promotion/promotion' });
   }

@@ -1,5 +1,6 @@
-﻿// pages/order/order.js
+// pages/order/order.js
 const { couponList: allCouponList } = require('../../constants/index');
+const db = require('../../utils/db');
 
 Page({
   data: {
@@ -24,13 +25,8 @@ Page({
       wx.removeStorageSync('orderItem');
       this.setData({ items: [item] });
     } else {
-      var cart = wx.getStorageSync('cart') || [];
-      if (cart.length === 0) {
-        wx.showToast({ title: '购物车是空的', icon: 'none' });
-        setTimeout(function() { wx.navigateBack(); }, 1500);
-        return;
-      }
-      this.setData({ items: cart });
+      var app = getApp();
+      this.setData({ items: app.globalData.cart || [] });
     }
 
     this._loadCoupons();
@@ -38,18 +34,26 @@ Page({
   },
 
   _loadCoupons: function () {
-    var userCouponIds = wx.getStorageSync('userReceivedCoupons') || [];
-    var available = [];
-    for (var i = 0; i < allCouponList.length; i++) {
-      var c = allCouponList[i];
-      for (var j = 0; j < userCouponIds.length; j++) {
-        if (userCouponIds[j] === c.id) {
-          available.push(c);
-          break;
+    var self = this;
+    db.getUserCoupons().then(function(res) {
+      var available = [];
+      var data = res.data || [];
+      for (var i = 0; i < data.length; i++) {
+        if (data[i].status === 'unused') {
+          available.push({
+            id: data[i].couponId,
+            name: data[i].name,
+            threshold: data[i].threshold,
+            reduce: data[i].reduce,
+            type: data[i].type,
+            _id: data[i]._id
+          });
         }
       }
-    }
-    this.setData({ coupons: available });
+      self.setData({ coupons: available });
+    }).catch(function(err) {
+      console.error('加载优惠券失败:', err);
+    });
   },
 
   _calcTotal: function () {
@@ -132,6 +136,7 @@ Page({
       return;
     }
 
+    var self = this;
     var now = new Date();
     var y = now.getFullYear();
     var m = String(now.getMonth() + 1).padStart(2, '0');
@@ -145,25 +150,53 @@ Page({
     var queueCount = Math.floor(Math.random() * 8) + 1;
     var estimatedMinutes = queueCount * 10 + Math.floor(Math.random() * 10);
 
-    var order = {
+    // 构建订单数据
+    var orderItems = this.data.items.map(function(item) {
+      return {
+        id: item.id,
+        name: item.name,
+        image: item.image,
+        sweetness: item.sweetness,
+        temperature: item.temperature,
+        size: item.size,
+        quantity: item.quantity,
+        totalPrice: item.totalPrice
+      };
+    });
+
+    var orderData = {
       orderNo: orderNo,
-      items: this.data.items,
+      items: orderItems,
       totalAmount: this.data.totalAmount,
       finalAmount: this.data.finalAmount,
-      couponUsed: this.data.selectedCoupon,
-      status: 'pending',
+      couponUsed: this.data.selectedCoupon ? {
+        id: this.data.selectedCoupon.id,
+        _id: this.data.selectedCoupon._id
+      } : null,
+      status: 0,
       paymentMethod: this.data.paymentMethod,
       createTime: new Date().toISOString()
     };
 
-    var orders = wx.getStorageSync('orders') || [];
-    orders.unshift(order);
-    wx.setStorageSync('orders', orders);
+    // 提交到云数据库
+    db.createOrder(orderData).then(function(res) {
+      // 如果使用了优惠券，标记为已使用
+      if (orderData.couponUsed && orderData.couponUsed._id) {
+        db.useCoupon(orderData.couponUsed._id).catch(function(err) {
+          console.error('优惠券使用标记失败:', err);
+        });
+      }
 
-    wx.removeStorageSync('cart');
+      // 清空购物车
+      var app = getApp();
+      app.clearCart();
 
-    wx.navigateTo({
-      url: '/pages/order-status/order-status?orderNo=' + orderNo + '&queueCount=' + queueCount + '&estimatedMinutes=' + estimatedMinutes
+      wx.navigateTo({
+        url: '/pages/order-status/order-status?orderNo=' + orderNo + '&queueCount=' + queueCount + '&estimatedMinutes=' + estimatedMinutes
+      });
+    }).catch(function(err) {
+      console.error('下单失败:', err);
+      wx.showToast({ title: '下单失败，请重试', icon: 'none' });
     });
   },
 
