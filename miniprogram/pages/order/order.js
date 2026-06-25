@@ -1,5 +1,4 @@
 // pages/order/order.js
-const { couponList: allCouponList } = require('../../constants/index');
 const db = require('../../utils/db');
 
 Page({
@@ -18,15 +17,35 @@ Page({
     estimatedMinutes: 0
   },
 
-  onLoad: function () {
-    var itemStr = wx.getStorageSync('orderItem');
-    if (itemStr) {
-      var item = JSON.parse(itemStr);
-      wx.removeStorageSync('orderItem');
-      this.setData({ items: [item] });
-    } else {
+  onLoad: function (options) {
+    var fromCart = options.cart === '1';
+
+    if (fromCart) {
+      // 从购物车页进来，加载选中商品
       var app = getApp();
-      this.setData({ items: app.globalData.cart || [] });
+      var selected = (app.globalData.cart || []).filter(function(it) { return it.checked !== false; });
+      if (selected.length === 0) {
+        wx.showToast({ title: '购物车是空的', icon: 'none' });
+        setTimeout(function() { wx.navigateBack(); }, 1500);
+        return;
+      }
+      this.setData({ items: selected });
+    } else {
+      var itemStr = wx.getStorageSync('orderItem');
+      if (itemStr) {
+        var item = JSON.parse(itemStr);
+        wx.removeStorageSync('orderItem');
+        this.setData({ items: [item] });
+      } else {
+        var cart = app.globalData.cart || [];
+        var sel = cart.filter(function(it) { return it.checked !== false; });
+        if (sel.length === 0) {
+          wx.showToast({ title: '购物车是空的', icon: 'none' });
+          setTimeout(function() { wx.navigateBack(); }, 1500);
+          return;
+        }
+        this.setData({ items: sel });
+      }
     }
 
     this._loadCoupons();
@@ -187,11 +206,11 @@ Page({
         });
       }
 
-      // 清空购物车
+      // 清空购物车（仅云数据库模式）
       var app = getApp();
       app.clearCart();
 
-      wx.navigateTo({
+      wx.redirectTo({
         url: '/pages/order-status/order-status?orderNo=' + orderNo + '&queueCount=' + queueCount + '&estimatedMinutes=' + estimatedMinutes
       });
     }).catch(function(err) {

@@ -8,11 +8,36 @@ Page({
     drinksList: drinks,
     drinkGroups: {},
     searchKeyword: '',
-    showSearch: false
+    showSearch: false,
+    cartCount: 0
   },
 
   onLoad: function () {
     this.groupDrinksByCategory();
+    this._updateCartCount();
+  },
+
+  onShow: function () {
+    this._updateCartCount();
+  },
+
+  _updateCartCount: function () {
+    var self = this;
+    var app = getApp();
+    // 先读本地缓存
+    var cart = app.globalData.cart || [];
+    var count = 0;
+    for (var i = 0; i < cart.length; i++) { count += cart[i].quantity || 0; }
+    self.setData({ cartCount: count });
+
+    // 同时从云端拉取
+    var db = require('../../utils/db');
+    db.getCart().then(function(res) {
+      var items = res.data || [];
+      var c = 0;
+      for (var j = 0; j < items.length; j++) { c += items[j].quantity || 0; }
+      self.setData({ cartCount: c });
+    });
   },
 
   groupDrinksByCategory: function () {

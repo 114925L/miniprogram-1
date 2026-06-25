@@ -114,4 +114,10 @@
       </block>
     </scroll-view>
   </view>
+
+  <!-- 悬浮购物车按钮 -->
+  <navigator url="/pages/cart/cart" class="float-cart">
+    <view class="fc-icon">🛒</view>
+    <view wx:if="{{cartCount > 0}}" class="fc-badge">{{cartCount > 99 ? '99+' : cartCount}}</view>
+  </navigator>
 </view>

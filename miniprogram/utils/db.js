@@ -7,107 +7,71 @@ const cloud = wx.cloud;
  * 集合: cart, user_coupons, user_signin, orders, users
  */
 
-// ============ cart ============
-
-// 获取购物车
-function getCart() {
+function _call(type, data) {
   return cloud.callFunction({
     name: 'cloud-business',
-    data: { type: 'getCart' }
+    data: Object.assign({ type: type }, data || {})
+  }).then(function(res) {
+    return res.result;
   });
 }
 
-// 更新购物车（全量覆盖）
+// ============ cart ============
+
+function getCart() {
+  return _call('getCart');
+}
+
 function updateCart(items) {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'updateCart', items: items }
-  });
+  return _call('updateCart', { items: items });
 }
 
 // ============ user_coupons ============
 
-// 获取用户优惠券列表
 function getUserCoupons() {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'getUserCoupons' }
-  });
+  return _call('getUserCoupons');
 }
 
-// 领取优惠券
 function receiveCoupon(coupon) {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'receiveCoupon', coupon: coupon }
-  });
+  return _call('receiveCoupon', { coupon: coupon });
 }
 
-// 使用优惠券
 function useCoupon(recordId) {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'useCoupon', recordId: recordId }
-  });
+  return _call('useCoupon', { recordId: recordId });
 }
 
 // ============ user_signin ============
 
-// 获取签到信息
 function getSignInInfo() {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'getSignInInfo' }
-  });
+  return _call('getSignInInfo');
 }
 
-// 签到
 function signIn() {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'signIn' }
-  });
+  return _call('signIn');
 }
 
 // ============ orders ============
 
-// 获取订单列表
 function getOrders(status) {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'getOrders', status: status }
-  });
+  return _call('getOrders', { status: status });
 }
 
-// 创建订单
 function createOrder(orderData) {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'createOrder', order: orderData }
-  });
+  return _call('createOrder', { order: orderData });
 }
 
-// 更新订单状态
 function updateOrderStatus(orderIdOrNo, status) {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: {
-      type: 'updateOrderStatus',
-      orderId: orderIdOrNo,
-      orderNo: orderIdOrNo,
-      status: status
-    }
+  return _call('updateOrderStatus', {
+    orderId: orderIdOrNo,
+    orderNo: orderIdOrNo,
+    status: status
   });
 }
 
 // ============ users ============
 
-// 获取用户信息
 function getUserInfo() {
-  return cloud.callFunction({
-    name: 'cloud-business',
-    data: { type: 'getUserInfo' }
-  });
+  return _call('getUserInfo');
 }
 
 module.exports = {

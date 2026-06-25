@@ -1,0 +1,246 @@
+/* pages/cart/cart.wxss */
+.cart-page {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 120rpx;
+}
+
+.cart-list {
+  padding: 20rpx;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 20rpx;
+}
+
+.ci-left {
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+}
+
+.ci-check {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 16rpx;
+  flex-shrink: 0;
+}
+
+.ci-check.checked {
+  background: #FF6B35;
+  border-color: #FF6B35;
+}
+
+.check-icon {
+  font-size: 22rpx;
+  color: #FF6B35;
+  font-weight: 700;
+}
+
+.ci-check.checked .check-icon {
+  color: #fff;
+}
+
+.ci-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ci-image text {
+  font-size: 50rpx;
+}
+
+.ci-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  min-width: 0;
+}
+
+.ci-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ci-spec {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.ci-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.ci-price {
+  display: flex;
+  align-items: baseline;
+}
+
+.ci-price-symbol {
+  font-size: 22rpx;
+  color: #FF6B35;
+}
+
+.ci-price-value {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FF6B35;
+}
+
+.ci-qty {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.qty-btn {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  border: 2rpx solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qty-btn text {
+  font-size: 28rpx;
+  color: #FF6B35;
+}
+
+.qty-value {
+  font-size: 28rpx;
+  color: #333;
+  min-width: 40rpx;
+  text-align: center;
+}
+
+.ci-del {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36rpx;
+  color: #ccc;
+  flex-shrink: 0;
+  margin-left: 16rpx;
+}
+
+.ci-del:active {
+  color: #FF6B35;
+}
+
+/* 空购物车 */
+.cart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 200rpx;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.empty-desc {
+  font-size: 24rpx;
+  color: #ccc;
+}
+
+/* 底部结算栏 */
+.cart-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 16rpx 30rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+  z-index: 200;
+}
+
+.cf-left {
+  display: flex;
+  align-items: center;
+}
+
+.cf-all-check {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  border: 2rpx solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+}
+
+.cf-all-check.checked {
+  background: #FF6B35;
+  border-color: #FF6B35;
+}
+
+.cf-all-check .check-icon {
+  font-size: 24rpx;
+}
+
+.cf-total {
+  font-size: 18rpx;
+  color: #333;
+}
+
+.cf-total::before {
+  content: '合计: ';
+  font-size: 24rpx;
+  color: #FF6B35;
+  font-weight: 700;
+}
+
+.cf-btn {
+  background: #FF6B35;
+  color: #fff;
+  padding: 16rpx 48rpx;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.cf-btn:active {
+  opacity: 0.85;
+}
