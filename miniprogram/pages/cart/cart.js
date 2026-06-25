@@ -55,13 +55,16 @@ Page({
     for (var i = 0; i < items.length; i++) {
       if (items[i].key === key) {
         items[i].checked = !items[i].checked;
-        // 重新计算总价
         items[i].totalPrice = this._calcItemPrice(items[i]);
         break;
       }
     }
     this.setData({ cartItems: items });
     this._recalcFromData();
+    // 同步到云端
+    db.updateCart(items).catch(function(err) {
+      console.error('同步勾选状态失败:', err);
+    });
   },
 
   onAllCheck: function () {
@@ -73,6 +76,9 @@ Page({
     }
     this.setData({ cartItems: items, allChecked: checked });
     this._recalcFromData();
+    db.updateCart(items).catch(function(err) {
+      console.error('同步全选状态失败:', err);
+    });
   },
 
   _calcItemPrice: function (item) {
@@ -98,6 +104,9 @@ Page({
     }
     this.setData({ cartItems: items });
     this._recalcFromData();
+    db.updateCart(items).catch(function(err) {
+      console.error('同步数量失败:', err);
+    });
   },
 
   _recalcFromData: function () {

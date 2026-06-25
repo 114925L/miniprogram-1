@@ -89,6 +89,7 @@ App({
     }
     if (existIdx > -1) {
       cart[existIdx].quantity += item.quantity;
+      cart[existIdx].checked = true;
     } else {
       cart.push({ key: key });
       var c = cart[cart.length - 1];
@@ -105,6 +106,7 @@ App({
       c.quantity = item.quantity;
       c.unitPrice = item.unitPrice;
       c.totalPrice = item.totalPrice;
+      c.checked = true;
     }
     this.globalData.cart = cart;
     // 同步到云数据库
