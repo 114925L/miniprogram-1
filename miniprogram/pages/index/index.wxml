@@ -39,7 +39,7 @@
           <view class="group-title">搜索结果</view>
           <view class="drink-grid">
             <view
-              wx:for="{{drinkGroups._search.drinks}}"
+              wx:for="{{searchDrinks}}"
               wx:key="id"
               class="drink-card"
               data-drink-id="{{item.id}}"
@@ -63,7 +63,7 @@
               </view>
             </view>
           </view>
-          <view wx:if="{{drinkGroups._search.drinks.length === 0}}" class="empty-tip">
+          <view wx:if="{{searchDrinks.length === 0}}" class="empty-tip">
             <text>暂无相关饮品</text>
           </view>
         </view>
@@ -73,7 +73,7 @@
         <view
           wx:for="{{drinkGroups}}"
           wx:for-item="groupItem"
-          wx:key="category"
+          wx:key="key"
           class="group"
           id="scrollTo-{{groupItem.category.id}}"
         >

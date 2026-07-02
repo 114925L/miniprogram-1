@@ -23,21 +23,23 @@ App({
       traceUser: true,
     });
 
-    // 1. 获取 openid
+    // 1. 获取 openid（通过云函数）
     wx.cloud.callFunction({
       name: 'cloud-business',
       data: { type: 'getUserInfo' }
     }).then(res => {
-      this.globalData.openid = wx.cloud.getWXContext().OPENID || '';
+      // openid 由云函数内部获取，客户端拿不到
+      // 后续所有云函数自动携带 openid，无需客户端传递
+      this.globalData.openid = '';
 
       // 2. 并行加载用户信息 + 购物车 + 签到
-      Promise.all([
+      return Promise.all([
         this._loadUserInfo(),
         this._loadCart(),
         this._loadSignIn()
-      ]).then(() => {
-        console.log('云数据加载完成');
-      });
+      ]);
+    }).then(() => {
+      console.log('云数据加载完成');
     }).catch(err => {
       console.error('初始化失败:', err);
     });
@@ -48,33 +50,29 @@ App({
   _loadUserInfo: function () {
     var self = this;
     return db.getUserInfo().then(res => {
-      if (res.data.length > 0) {
-        var u = res.data[0];
-        self.globalData.points = u.points || 0;
-        self.globalData.userInfo = {
-          nickname: u.nickname || '奶茶爱好者',
-          avatar: u.avatar || '😊',
-          uid: u.uid || ''
-        };
-      }
+      var u = res.data || {};
+      self.globalData.points = u.points || 0;
+      self.globalData.userInfo = {
+        nickname: u.nickname || '奶茶爱好者',
+        avatar: u.avatar || '😊',
+        uid: u.uid || ''
+      };
     });
   },
 
   _loadCart: function () {
     var self = this;
     return db.getCart().then(res => {
-      self.globalData.cart = res.data || [];
+      self.globalData.cart = (res.data && res.data.items) || [];
     });
   },
 
   _loadSignIn: function () {
     var self = this;
     return db.getSignInInfo().then(res => {
-      if (res.data && res.data.length > 0) {
-        var info = res.data[0];
-        self.globalData.signInStreak = info.streak || 0;
-        self.globalData.canSignIn = info.canSignIn !== false;
-      }
+      var info = res.data || {};
+      self.globalData.signInStreak = info.streak || 0;
+      self.globalData.canSignIn = info.canSignIn !== false;
     });
   },
 

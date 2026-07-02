@@ -18,7 +18,7 @@ Page({
     var self = this;
     db.getCart().then(function(res) {
       var items = res.data || [];
-      // 过滤掉 quantity <= 0 的
+      if (Object.keys(items).length > 0 && !Array.isArray(items)) items = [];
       items = items.filter(function(it) { return (it.quantity || 0) > 0; });
       self._calcTotals(items);
     }).catch(function(err) {

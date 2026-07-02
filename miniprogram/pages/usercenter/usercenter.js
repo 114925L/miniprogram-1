@@ -47,12 +47,12 @@ Page({
       db.getSignInInfo(),
       db.getOrders()
     ]).then(function(results) {
-      // 用户信息
-      var userInfo = results[0].data && results[0].data.length > 0 ? results[0].data[0] : null;
-      var points = userInfo ? (userInfo.points || 0) : (app.globalData.points || 0);
-      var nickname = userInfo ? (userInfo.nickname || '奶茶爱好者') : '奶茶爱好者';
-      var avatar = userInfo ? (userInfo.avatar || '😊') : '😊';
-      var uid = userInfo ? (userInfo.uid || '') : '';
+      // 用户信息（getUserInfo 直接返回 data 对象）
+      var userInfo = results[0].data || {};
+      var points = userInfo.points || app.globalData.points || 0;
+      var nickname = userInfo.nickname || '奶茶爱好者';
+      var avatar = userInfo.avatar || '😊';
+      var uid = userInfo.uid || '';
 
       // 优惠券
       var couponData = results[1].data || [];
@@ -69,7 +69,7 @@ Page({
         });
       }
 
-      // 签到
+      // 签到（getSignInInfo 直接返回 data 对象）
       var signIn = results[2].data || {};
       var streak = signIn.streak || 0;
       var canSignIn = signIn.canSignIn !== false;

@@ -9,7 +9,8 @@ Page({
     drinkGroups: {},
     searchKeyword: '',
     showSearch: false,
-    cartCount: 0
+    cartCount: 0,
+    searchDrinks: []
   },
 
   onLoad: function () {
@@ -24,13 +25,11 @@ Page({
   _updateCartCount: function () {
     var self = this;
     var app = getApp();
-    // 先读本地缓存
     var cart = app.globalData.cart || [];
     var count = 0;
     for (var i = 0; i < cart.length; i++) { count += cart[i].quantity || 0; }
     self.setData({ cartCount: count });
 
-    // 同时从云端拉取
     var db = require('../../utils/db');
     db.getCart().then(function(res) {
       var items = res.data || [];
@@ -41,15 +40,16 @@ Page({
   },
 
   groupDrinksByCategory: function () {
-    const groups = {};
+    const groups = [];
     const cats = this.data.categories;
 
-    groups['all'] = { category: { id: 'all', name: '全部', icon: '🧋' }, drinks: drinks };
+    // 全部
+    groups.push({ key: 'all', category: { id: 'all', name: '全部', icon: '🧋' }, drinks: drinks });
 
     cats.forEach(cat => {
       const items = drinks.filter(d => d.category === cat.id);
       if (items.length > 0) {
-        groups[cat.id] = { category: cat, drinks: items };
+        groups.push({ key: cat.id, category: cat, drinks: items });
       }
     });
 
@@ -77,9 +77,7 @@ Page({
     );
     this.setData({
       activeCategory: '_search',
-      drinkGroups: {
-        _search: { category: { id: '_search', name: '搜索结果' }, drinks: filtered }
-      }
+      searchDrinks: filtered
     });
   },
 
