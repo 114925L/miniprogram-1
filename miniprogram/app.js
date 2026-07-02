@@ -62,8 +62,16 @@ App({
 
   _loadCart: function () {
     var self = this;
-    return db.getCart().then(res => {
-      self.globalData.cart = (res.data && res.data.items) || [];
+    return db.getCart().then(function(res) {
+      var items = res.data || [];
+      // 首次启动清理云端残留测试数据，仅执行一次
+      if (items.length > 0 && !wx.getStorageSync('_cart_clean')) {
+        self.globalData.cart = [];
+        return db.updateCart([]).then(function() {
+          wx.setStorageSync('_cart_clean', true);
+        });
+      }
+      self.globalData.cart = items;
     });
   },
 
