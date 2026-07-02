@@ -192,7 +192,7 @@ Page({
         id: this.data.selectedCoupon.id,
         _id: this.data.selectedCoupon._id
       } : null,
-      status: 0,
+      status: 1,
       paymentMethod: this.data.paymentMethod,
       createTime: new Date().toISOString()
     };
@@ -211,7 +211,7 @@ Page({
       app.clearCart();
 
       wx.redirectTo({
-        url: '/pages/payment/payment?orderNo=' + orderNo + '&queueCount=' + queueCount + '&estimatedMinutes=' + estimatedMinutes + '&finalAmount=' + self.data.finalAmount
+        url: '/pages/order-status/order-status?orderNo=' + orderNo + '&queueCount=' + queueCount + '&estimatedMinutes=' + estimatedMinutes
       });
     }).catch(function(err) {
       console.error('下单失败:', err);
