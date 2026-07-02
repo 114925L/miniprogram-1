@@ -157,18 +157,27 @@ Page({
     var tab = this.data.activeOrderTab;
     var allOrders = this.data.orders;
     var filtered = allOrders;
-    if (tab > 0 && tab < 3) {
+    if (tab === 1) {
+      // 待付款 → status === 0
       var result = [];
       for (var i = 0; i < allOrders.length; i++) {
-        if (allOrders[i].status === tab) { result.push(allOrders[i]); }
+        if (allOrders[i].status === 0) { result.push(allOrders[i]); }
       }
       filtered = result;
-    } else if (tab === 3) {
+    } else if (tab === 2) {
+      // 待取货 → status === 1
       var result2 = [];
       for (var j = 0; j < allOrders.length; j++) {
-        if (allOrders[j].status === 2) { result2.push(allOrders[j]); }
+        if (allOrders[j].status === 1) { result2.push(allOrders[j]); }
       }
       filtered = result2;
+    } else if (tab === 3) {
+      // 已完成 → status === 2
+      var result3 = [];
+      for (var k = 0; k < allOrders.length; k++) {
+        if (allOrders[k].status === 2) { result3.push(allOrders[k]); }
+      }
+      filtered = result3;
     }
     this.setData({ filteredOrders: filtered });
   },
