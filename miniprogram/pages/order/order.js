@@ -58,8 +58,7 @@ Page({
       var available = [];
       var data = res.data || [];
       for (var i = 0; i < data.length; i++) {
-        if (data[i].status === 'unused') {
-          available.push({
+        available.push({
             id: data[i].couponId,
             name: data[i].name,
             threshold: data[i].threshold,
@@ -67,7 +66,6 @@ Page({
             type: data[i].type,
             _id: data[i]._id
           });
-        }
       }
       self.setData({ coupons: available });
     }).catch(function(err) {

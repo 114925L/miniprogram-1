@@ -35,19 +35,21 @@ exports.main = async (event, context) => {
   // ============ user_coupons ============
 
   if (type === 'getUserCoupons') {
-    const res = await db.collection('user_coupons').where({ userId: openid }).get();
+    const res = await db.collection('user_coupons').where({ userId: openid, status: 'unused' }).get();
     return { success: true, data: res.data };
   }
 
   if (type === 'receiveCoupon') {
     const coupon = event.coupon;
-    // 检查是否已领取
+    const today = new Date().toDateString();
+    // 检查今天是否已领取同一张券
     const exist = await db.collection('user_coupons').where({
       userId: openid,
-      couponId: coupon.id
+      couponId: coupon.id,
+      receivedDate: today
     }).get();
     if (exist.data.length > 0) {
-      return { success: false, errMsg: 'already_received' };
+      return { success: false, errMsg: 'already_received_today' };
     }
     await db.collection('user_coupons').add({
       data: {
@@ -58,6 +60,7 @@ exports.main = async (event, context) => {
         reduce: coupon.reduce,
         type: coupon.type,
         status: 'unused',
+        receivedDate: today,
         receivedAt: db.serverDate(),
         usedAt: null
       }

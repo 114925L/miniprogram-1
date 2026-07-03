@@ -94,7 +94,7 @@ Page({
         wx.showToast({ title: '领取成功', icon: 'success' });
         self._loadUserCoupons();
       }).catch(function(err) {
-        if (err.data && err.data.errMsg && err.data.errMsg.indexOf('already_received') !== -1) {
+        if (err.data && err.data.errMsg && err.data.errMsg === 'already_received_today') {
           wx.showToast({ title: '已经领取过了', icon: 'none' });
         } else {
           console.error('领取失败:', err);
